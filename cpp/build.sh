@@ -1,4 +1,5 @@
 g++ -c *.cpp;
 g++ *.o -o thc.exe;
-mkdir stepfiles;
-mv *.o stepfiles;
+mkdir stepfiles/;
+mv *.o stepfiles/;
+mv *.exe bin/;

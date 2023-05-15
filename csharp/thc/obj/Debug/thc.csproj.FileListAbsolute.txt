@@ -6,3 +6,11 @@ C:\Users\1\Desktop\藤原妹紅\программиорвание\repos\THC\cshar
 C:\Users\1\Desktop\藤原妹紅\программиорвание\repos\THC\csharp\thc\obj\Debug\thc.csproj.CoreCompileInputs.cache
 C:\Users\1\Desktop\藤原妹紅\программиорвание\repos\THC\csharp\thc\obj\Debug\thc.exe
 C:\Users\1\Desktop\藤原妹紅\программиорвание\repos\THC\csharp\thc\obj\Debug\thc.pdb
+C:\Users\UC33_9\source\repos\thc\csharp\thc\bin\Debug\thc.exe.config
+C:\Users\UC33_9\source\repos\thc\csharp\thc\bin\Debug\thc.exe
+C:\Users\UC33_9\source\repos\thc\csharp\thc\bin\Debug\thc.pdb
+C:\Users\UC33_9\source\repos\thc\csharp\thc\obj\Debug\thc.csproj.AssemblyReference.cache
+C:\Users\UC33_9\source\repos\thc\csharp\thc\obj\Debug\thc.csproj.SuggestedBindingRedirects.cache
+C:\Users\UC33_9\source\repos\thc\csharp\thc\obj\Debug\thc.csproj.CoreCompileInputs.cache
+C:\Users\UC33_9\source\repos\thc\csharp\thc\obj\Debug\thc.exe
+C:\Users\UC33_9\source\repos\thc\csharp\thc\obj\Debug\thc.pdb

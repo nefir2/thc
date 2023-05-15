@@ -1,5 +1,5 @@
 ﻿using System; //cw
-using System.IO;
+using System.IO; //filenotfoundexception
 using System.Reflection; //assembly
 
 namespace thc
@@ -16,7 +16,7 @@ namespace thc
 				switch (args.Length) //thcrap_loader.exe
 				{
 					case 2:
-						Thc.Launch($"{thcrap} {Thc.thArgMaker(args[0])} {Thc.jsArgMaker(args[1])}");
+						Thc.Launch($"{thcrap} {Thc.ThArgMaker(args[0])} {Thc.JsArgMaker(args[1])}");
 						break;
 					case 1:
 						if (args[0].StartsWith("-h") || args[0].StartsWith("--h"))
@@ -24,7 +24,7 @@ namespace thc
 							Usage();
 							return;
 						}
-						else Thc.Launch($"{thcrap} {Thc.thArgMaker(args[0])} {lang}");
+						else Thc.Launch($"{thcrap} {Thc.ThArgMaker(args[0])} {lang}");
 						break;
 					default:
 						Usage();

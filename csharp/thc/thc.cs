@@ -1,4 +1,4 @@
-﻿using System; //serializable, exception
+﻿using System; //exception
 using System.Diagnostics; //process
 using System.IO; //path, file
 using System.Text; //stringbuilder
@@ -34,18 +34,20 @@ namespace thc
 		/// </summary>
 		/// <param name="fileAndArgs">name of program to launch and his args</param>
 		/// <exception cref="FileNotFoundException"/>
-		public static void Launch(string fileAndArgs)
-		{
-			try
+		public static Process Launch(string fileAndArgs)
+        {
+            string file = fileAndArgs.CutToFirst(' ', out int i);
+            string args = fileAndArgs.Substring(i + 1);
+			Process proc;
+            try
 			{
-				string file = fileAndArgs.CutToFirst(' ', out int i);
-				string args = fileAndArgs.Substring(i + 1);
-				Process.Start(file, args);
+				proc = Process.Start(file, args);
 			}
 			catch (FileNotFoundException ex) 
 			{
-				throw new FileNotFoundException("touhou game not found.", ex);
+				throw new FileNotFoundException($"{file} not found.", ex);
 			}
+			return proc;
 		}
 		/// <summary>
 		/// parsing string with number of touhou game.
@@ -53,16 +55,18 @@ namespace thc
 		/// <param name="numberOfTh">number of touhou game.</param>
 		/// <returns>returns <see cref="string"/> with number of touhou in format: <c>th{number}</c>.</returns>
 		/// <exception cref="NumberOfThException"></exception>
-		public static string thArgMaker(string numberOfTh)
+		public static string ThArgMaker(string numberOfTh)
 		{
-			if (numberOfTh == "95") numberOfTh = "095";
-			else if (numberOfTh == "75") numberOfTh = "075";
-
 			if (numberOfTh.StartsWith("th")) return numberOfTh;
-			else if (int.TryParse(numberOfTh, out int i)) return $"th{i:d2}";
+			else if (int.TryParse(numberOfTh, out int i))
+			{
+				if (numberOfTh == "95") return $"th{095:d3}";
+				else if (numberOfTh == "75") return $"th{075:d3}";
+                return $"th{i:d2}";
+			}
 			else throw new NumberOfThException("not a number of touhou game.");
 		}
-		public static string jsArgMaker(string lang)
+		public static string JsArgMaker(string lang)
 		{
 			if (lang.EndsWith(".js")) return lang;
 			else if (lang.Contains(".")) throw new Exception("not a .js file.");
@@ -70,13 +74,4 @@ namespace thc
 		}
 	}
 
-	[Serializable] public class NumberOfThException : Exception
-	{
-		public NumberOfThException() { }
-		public NumberOfThException(string message) : base(message) { }
-		public NumberOfThException(string message, Exception inner) : base(message, inner) { }
-		protected NumberOfThException(
-		  System.Runtime.Serialization.SerializationInfo info,
-		  System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
-	}
 }

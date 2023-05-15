@@ -16,7 +16,7 @@ void thLaunch(char *nameOfTh, char *lang) {
 
 	free(nameOfTh);
 	free(lang);
-} //пока что запускаться не может.
+}
 void thLaunch(char *nameOfTh, string lang) { thLaunch(nameOfTh, lang.c_str()); }
 void thLaunch(string nameOfTh) { thLaunch(nameOfTh.c_str()); }
 void thLaunch(string nameOfTh, char *lang) { thLaunch(nameOfTh.c_str(), lang); }

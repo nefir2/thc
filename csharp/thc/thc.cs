@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Diagnostics; //process
 using System.IO; //path, file
 using System.Text; //stringbuilder
-
 namespace thc
 {
 	/// <summary> class that reading and parsing console input. </summary>

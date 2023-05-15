@@ -1,7 +1,5 @@
 ﻿using System; //cw
-using System.IO; //filenotfoundexception
 using System.Reflection; //assembly
-
 namespace thc
 {
 	/// <summary> main class. </summary>

@@ -1,4 +1,5 @@
 ﻿using System; //cw
+using System.IO;
 using System.Reflection; //assembly
 
 namespace thc
@@ -7,28 +8,34 @@ namespace thc
 	{
 		public static void Main(string[] args)
 		{
-			bool isExThc = thc.CheckPath("thcrap_loader.exe", out bool isl);
-            Console.WriteLine
-			(
-				$"thcrap_loader is found: {isExThc}\n" +
-				$"thcrap in . folder: {isl}"
-			);
-            switch (args.Length) //thcrap_loader.exe
+			string thcrap = "thcrap_loader.exe";
+			string lang = "ru.js";
+			try
 			{
-				case 2:
-
-					break;
-				case 1:
-					if (args[0].StartsWith("-h") || args[0].StartsWith("--h"))
-					{
+				
+				switch (args.Length) //thcrap_loader.exe
+				{
+					case 2:
+						Thc.Launch($"{thcrap} {Thc.thArgMaker(args[0])} {Thc.jsArgMaker(args[1])}");
+						break;
+					case 1:
+						if (args[0].StartsWith("-h") || args[0].StartsWith("--h"))
+						{
+							Usage();
+							return;
+						}
+						else Thc.Launch($"{thcrap} {Thc.thArgMaker(args[0])} {lang}");
+						break;
+					default:
 						Usage();
-						return;
-					}
-					break;
-				default:
-					Usage();
-					return;
+						break;
+				}
 			}
+			catch (FileNotFoundException)
+			{
+				Console.WriteLine("thcrap_loader is not found");
+			}
+			return;
 		}
 		/// <summary>
 		/// shows manual for this program.

@@ -55,8 +55,11 @@ namespace thc
 		/// <exception cref="NumberOfThException"></exception>
 		public static string thArgMaker(string numberOfTh)
 		{
+			if (numberOfTh == "95") numberOfTh = "095";
+			else if (numberOfTh == "75") numberOfTh = "075";
+
 			if (numberOfTh.StartsWith("th")) return numberOfTh;
-			else if (int.TryParse(numberOfTh, out int i)) return $"th{i}";
+			else if (int.TryParse(numberOfTh, out int i)) return $"th{i:d2}";
 			else throw new NumberOfThException("not a number of touhou game.");
 		}
 		public static string jsArgMaker(string lang)

@@ -1,22 +1,24 @@
 ﻿using System; //cw
-using System.IO;
 using System.Reflection; //assembly
-
 namespace thc
 {
+	/// <summary> main class. </summary>
 	internal class Program
 	{
+		/// <summary>
+		/// main method.
+		/// </summary>
+		/// <param name="args">args from console.</param>
 		public static void Main(string[] args)
 		{
-			string thcrap = "thcrap_loader.exe";
-			string lang = "ru.js";
+			string thcrap = "thcrap_loader.exe"; //path to thcrap_loader.exe
+			string lang = "ru.js"; //default language
 			try
 			{
-				
-				switch (args.Length) //thcrap_loader.exe
+				switch (args.Length)
 				{
 					case 2:
-						Thc.Launch($"{thcrap} {Thc.thArgMaker(args[0])} {Thc.jsArgMaker(args[1])}");
+						Thc.Launch($"{thcrap} {Thc.ThArgMaker(args[0])} {Thc.JsArgMaker(args[1])}");
 						break;
 					case 1:
 						if (args[0].StartsWith("-h") || args[0].StartsWith("--h"))
@@ -24,21 +26,21 @@ namespace thc
 							Usage();
 							return;
 						}
-						else Thc.Launch($"{thcrap} {Thc.thArgMaker(args[0])} {lang}");
+						else Thc.Launch($"{thcrap} {Thc.ThArgMaker(args[0])} {lang}");
 						break;
 					default:
 						Usage();
 						break;
 				}
 			}
-			catch (FileNotFoundException)
+			catch (Exception ex)
 			{
-				Console.WriteLine("thcrap_loader is not found");
+				Console.WriteLine(ex.Message); //"thcrap_loader is not found"
 			}
 			return;
 		}
 		/// <summary>
-		/// shows manual for this program.
+		/// manual for this program.
 		/// </summary>
 		public static void Usage()
 		{
@@ -50,11 +52,5 @@ namespace thc
 				$"\tlang - language for game from config json files (default=ru.js)\n"
 			);
 		}
-		/// <summary>
-		/// checking path for <paramref name="file"/> in this folder or in %PATH% Variable.
-		/// </summary>
-		/// <param name="file">file to check</param>
-		/// <param name="isLocal">if file in local folder returns <see langword="true"/></param>
-		/// <returns></returns>
 	}
 }

@@ -2,7 +2,6 @@
 using System.ComponentModel; //win32exception
 using System.Diagnostics; //process
 using System.IO; //path, file
-using System.Text; //stringbuilder
 namespace thc
 {
 	/// <summary> class that reading and parsing console input. </summary>
@@ -18,7 +17,6 @@ namespace thc
 		public static string CutToFirst(this string str, char symbol, out int firstSymbol)
 		{
 			string ret = "";
-			StringBuilder strbld = new StringBuilder(str);
 			firstSymbol = -1;
 			for (int i = 0; i < str.Length - 1; i++)
 			{
@@ -68,8 +66,7 @@ namespace thc
 			if (numberOfTh.StartsWith("th")) return numberOfTh;
 			else if (int.TryParse(numberOfTh, out int i))
 			{
-				if (numberOfTh == "95") return $"th{095:d3}";
-				else if (numberOfTh == "75") return $"th{075:d3}";
+				if (i >= 75) return $"th{i:d3}";
 				return $"th{i:d2}";
 			}
 			else throw new NumberOfThException("not a number of touhou game.");

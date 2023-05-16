@@ -1,5 +1,6 @@
 ﻿using System; //cw
 using System.Reflection; //assembly
+using static thc.Thc; //no more Thc.
 namespace thc
 {
 	/// <summary> main class. </summary>
@@ -18,7 +19,7 @@ namespace thc
 				switch (args.Length)
 				{
 					case 2:
-						Thc.Launch($"{thcrap} {Thc.ThArgMaker(args[0])} {Thc.JsArgMaker(args[1])}");
+						Launch($"{thcrap} {ThArgMaker(args[0])} {JsArgMaker(args[1])}");
 						break;
 					case 1:
 						if (args[0].StartsWith("-h") || args[0].StartsWith("--h"))
@@ -26,7 +27,7 @@ namespace thc
 							Usage();
 							return;
 						}
-						else Thc.Launch($"{thcrap} {Thc.ThArgMaker(args[0])} {lang}");
+						else Launch($"{thcrap} {ThArgMaker(args[0])} {lang}");
 						break;
 					default:
 						Usage();

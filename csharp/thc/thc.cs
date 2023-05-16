@@ -1,5 +1,5 @@
 ﻿using System; //exception
-using System.ComponentModel;
+using System.ComponentModel; //win32exception
 using System.Diagnostics; //process
 using System.IO; //path, file
 using System.Text; //stringbuilder

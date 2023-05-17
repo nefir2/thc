@@ -1,7 +1,9 @@
 ﻿using System; //exception
+using System.Collections.Generic; //list
 using System.ComponentModel; //win32exception
 using System.Diagnostics; //process
 using System.IO; //filenotfoundexception
+using System.Linq; //.tolist<>()
 namespace thc
 {
 	/// <summary> class that reading and parsing console input. </summary>
@@ -64,7 +66,7 @@ namespace thc
 		/// </summary>
 		/// <param name="numberOfTh">number of touhou game.</param>
 		/// <returns>returns <see cref="string"/> with number of touhou in format: <c>th{number}</c>.</returns>
-		/// <exception cref="NumberOfThException"></exception>
+		/// <exception cref="Exception"></exception>
 		public static string ThArgMaker(string numberOfTh)
 		{
 			if (numberOfTh.StartsWith("th")) return numberOfTh;
@@ -74,6 +76,23 @@ namespace thc
 				return $"th{i:d2}";
 			}
 			else throw new Exception("not a number of touhou game.");
+		}
+		/// <summary>
+		/// parsing string with number of touhou game.
+		/// </summary>
+		/// <param name="numberOfTh">number of touhou game.</param>
+		/// <returns>returns <see cref="string"/> with number of touhou in format: <c>th{number}</c>.</returns>
+		/// <exception cref="Exception"></exception>
+		public static string ThArgMaker(int numberOfTh)
+		{
+			try
+			{
+				return ThArgMaker($"{numberOfTh}");
+			}
+			catch (Exception ex)
+			{
+				throw new Exception(ex.Message, ex);
+			}
 		}
 		/// <summary>
 		/// parsing string with name of lang js file for touhou.
@@ -86,6 +105,42 @@ namespace thc
 			if (lang.EndsWith(".js")) return lang;
 			else if (lang.Contains(".")) throw new Exception("not a .js file.");
 			else return $"{lang}.js";
+		}
+		/// <summary>
+		/// removes element from array and returns this array.
+		/// </summary>
+		/// <typeparam name="T">type of array's elements.</typeparam>
+		/// <param name="array">the array to remove the element from.</param>
+		/// <param name="value">element of array, that must disappear.</param>
+		/// <returns>array without <paramref name="value"/>.</returns>
+		public static T[] DeleteValue<T>(this T[] array, T value)
+		{
+			List<T> x = array.ToList();
+			x.Remove(value);
+			return x.ToArray();
+		}
+		/// <summary>
+		/// метод вырезающий подстроку из общей строки по указанным позициям.
+		/// </summary>
+		/// <remarks>
+		/// <paramref name="start"/>: знак под указанным номером возвращается в составе подстроки. <br/>
+		/// <paramref name="end"/>: знак под указанным номером не возвращается в составе подстроки.
+		/// </remarks>
+		/// <param name="value">строка, из которой вырезается подстрока.</param>
+		/// <param name="start">точка начала выреза.</param>
+		/// <param name="end">точка окончания выреза.</param>
+		/// <returns>вырезанная подстрока типа <see cref="string"/>.</returns>
+		/// <exception cref="ArgumentException"/>
+		/// <exception cref="IndexOutOfRangeException"/>
+		public static string Cut(this string value, int start, int end)
+		{
+			if (start > end) throw new ArgumentException("начальная позиция для вырезания подстроки не может быть больше конечной позиции.");
+			if (start < 0 || end < 0) throw new IndexOutOfRangeException("начало или конец вырезания подстроки не может быть меньше нуля.");
+			if (start > value.Length || end > value.Length) throw new IndexOutOfRangeException("начало или конец вырезания подстроки не может быть больше длины строки.");
+
+			string cutted = "";
+			for (int i = start; i < end; i++) cutted += value[i];
+			return cutted;
 		}
 	}
 }

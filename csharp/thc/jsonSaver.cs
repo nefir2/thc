@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks; //task<t>
+﻿using System.IO; //filestream
 using System.Text.Json; //jsonserializer
-using System.IO; //filestream
+using System.Threading.Tasks; //task<t>
 namespace thc
 {
 	public static class JsonSaver

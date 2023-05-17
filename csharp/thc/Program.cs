@@ -1,6 +1,7 @@
 ﻿using System; //cw
+using System.IO; //filestream
 using System.Reflection; //assembly
-using static thc.Thc; //no more Thc.
+using static thc.Thc; //no more "Thc."
 namespace thc
 {
 	/// <summary> main class. </summary>
@@ -52,6 +53,33 @@ namespace thc
 				$"\tth - number of touhou game. may be like \"th06\" or like \"06\".\n" +
 				$"\tlang - language for game from config json files (default=ru.js)\n"
 			);
+		}
+		/// <summary>
+		/// shows and waiting for data from console.
+		/// </summary>
+		/// <param name="message">message why input.</param>
+		/// <returns>returns inputted <see cref="string"/>.</returns>
+		public static string GetString(string message)
+		{
+			Console.Write(message);
+			return Console.ReadLine();
+		}
+		public static bool FetchSettings(string filePath, ref ThSettings settings, bool verbose = false)
+		{
+			bool isRead;
+			if (verbose) Console.WriteLine("");
+			if (!File.Exists(filePath) && !(settings is null))
+			{
+				JsonSaver.MakeFile(filePath, settings);
+				isRead = false;
+			}
+			else
+			{
+				settings = JsonSaver.ReadFile<ThSettings>(filePath);
+				isRead = true;
+			}
+			return isRead;
+			//using (FileStream x = new FileStream(filePath, FileMode.))
 		}
 	}
 }

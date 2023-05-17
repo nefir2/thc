@@ -1,7 +1,7 @@
 ﻿using System; //exception
 using System.ComponentModel; //win32exception
 using System.Diagnostics; //process
-using System.IO; //path, file
+using System.IO; //filenotfoundexception
 namespace thc
 {
 	/// <summary> class that reading and parsing console input. </summary>
@@ -53,6 +53,10 @@ namespace thc
 			{
 				throw new Win32Exception($"{file} not found.", ex);
 			}
+			catch (Exception ex)
+			{
+				throw new Exception(ex.Message, ex);
+			}
 			return proc;
 		}
 		/// <summary>
@@ -69,7 +73,7 @@ namespace thc
 				if (i >= 75) return $"th{i:d3}";
 				return $"th{i:d2}";
 			}
-			else throw new NumberOfThException("not a number of touhou game.");
+			else throw new Exception("not a number of touhou game.");
 		}
 		/// <summary>
 		/// parsing string with name of lang js file for touhou.

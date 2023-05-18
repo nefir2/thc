@@ -7,11 +7,11 @@ namespace thc
 	{
 		public static void MakeFile<T>(string path, T saveToJson)
 		{
-			using (FileStream x = new FileStream(path, FileMode.Create)) JsonSerializer.SerializeAsync(x, saveToJson, typeof(T), new JsonSerializerOptions() { WriteIndented = true });
+			using (FileStream x = new FileStream(path, FileMode.OpenOrCreate)) JsonSerializer.SerializeAsync(x, saveToJson, typeof(T), new JsonSerializerOptions() { WriteIndented = true });
 		}
 		public static async void MakeFileAsync<T>(string path, T saveToJson)
 		{
-			using (FileStream x = new FileStream(path, FileMode.Create)) await JsonSerializer.SerializeAsync(x, saveToJson, typeof(T), new JsonSerializerOptions() { WriteIndented = true });
+			using (FileStream x = new FileStream(path, FileMode.OpenOrCreate)) await JsonSerializer.SerializeAsync(x, saveToJson, typeof(T), new JsonSerializerOptions() { WriteIndented = true });
 		}
 		public static T ReadFile<T>(string path)
 		{

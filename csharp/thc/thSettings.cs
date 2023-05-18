@@ -25,6 +25,6 @@
 			DefaultLang = defaultLang;
 			ThcrapPath = thcrapPath;
 		}
-		public override string ToString() => $"default touhou number: {Thc.ThArgMaker(DefaultTouhou)}\ndefault language: {Thc.JsArgMaker(DefaultLang)}\nthcrap folder path: {ThcrapPath}";
+		public override string ToString() => $"default touhou number: {DefaultTouhou}\ndefault language: {DefaultLang}\nthcrap folder path: {ThcrapPath}";
 	}
 }

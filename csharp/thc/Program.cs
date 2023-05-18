@@ -4,7 +4,7 @@ using System.Reflection; //assembly
 namespace thc
 {
 	/// <summary> main class. </summary>
-	internal class Program
+	internal static class Program
 	{
 		/// <summary>
 		/// main method.
@@ -12,33 +12,45 @@ namespace thc
 		/// <param name="args">args from console.</param>
 		public static void Main(string[] args)
 		{
-			string jsonPath = ".\\thc.json";
+			string jsonPath = $".\\{Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location)}.json";
+			string thcrapload = "thcrap_loader.exe";
 			ThSettings settings = FetchFile(jsonPath);
 			if (settings is null)
 			{
-				settings = new ThSettings(Thc.ThArgMaker("6"));
+				settings = new ThSettings(Thc.ThArgMaker("6")); //Thc.ThArgMaker("6")
 				JsonSaver.MakeFile(jsonPath, settings);
 			}
 			if (args.Length > 0)
 			{
-				if (args[0].Length >= 3 && args[0].Cut(0, 3).Equals("--")) //@@@@@@@@@@ functions @@@@@@@@@
+				//Console.WriteLine($"args[0]: {args[0]}\nargs[0].Length: {args[0].Length}\nargs[0].Length >= 2: {args[0].Length >= 2}\nargs[0].Cut(0, 2): {args[0].Cut(0, 2)}\nargs[0].Cut(0, 2).Equals(\"--\"): {args[0].Cut(0, 2).Equals("--")}\n");
+				if (args[0].Length >= 2 && args[0].Cut(0, 2).Equals("--")) //@@@@@@@@@@ functions @@@@@@@@@
 				{
+					//Console.WriteLine($"args.Length == 2: {args.Length == 2}\n");
 					if (args.Length == 2)
 					{
+						//Console.WriteLine($"args[1]: {args[1]}\n");
 						switch (args[0])
 						{
 							case "--th":
 								settings.DefaultTouhou = Thc.ThArgMaker(args[1]);
-								return;
+								//Console.WriteLine($"settings.DefaultTouhou: {settings.DefaultTouhou}\nsettings:\n{settings}\n");
+								JsonSaver.MakeFile(jsonPath, settings);
+                                //Console.WriteLine($"jsonPath: {jsonPath}\n");
+                                return;
 							case "--lang":
 								settings.DefaultLang = Thc.JsArgMaker(args[1]);
+								JsonSaver.MakeFile(jsonPath, settings);
 								return;
 							case "--thcrap":
 								if (!Directory.Exists(args[1])) Console.WriteLine("folder not exist or path is not a folder.");
 								else
 								{
-									if (!File.Exists(Path.Combine(args[1], "thcrap_loader.exe")) && !Directory.Exists(Path.Combine(args[1], "config"))) Console.WriteLine("not a thcrap folder.");
-									else settings.ThcrapPath = args[1];
+									if (!File.Exists(Path.Combine(args[1], thcrapload)) && !Directory.Exists(Path.Combine(args[1], "config"))) Console.WriteLine("not a thcrap folder.");
+									else
+									{
+										settings.ThcrapPath = args[1];
+										JsonSaver.MakeFile(jsonPath, settings);
+									}
 								}
 								return;
 							default:
@@ -66,7 +78,6 @@ namespace thc
 					}
 				}
 			}
-			string thcrapload = "thcrap_loader.exe";
 			try
 			{
 				switch (args.Length)
@@ -75,10 +86,15 @@ namespace thc
 						Thc.Launch($"\"{settings.ThcrapPath}\\{thcrapload}\" {Thc.ThArgMaker(args[0])} {Thc.JsArgMaker(args[1])}");
 						return;
 					case 1:
-						Thc.Launch($"\"{settings.ThcrapPath}\\{thcrapload}\" {Thc.ThArgMaker(args[0])} {settings.DefaultLang}");
+						Thc.Launch($"\"{settings.ThcrapPath}\\{thcrapload}\" {Thc.ThArgMaker(args[0])} {Thc.JsArgMaker(settings.DefaultLang)}");
 						return;
 					default:
-						Thc.Launch($"\"{settings.ThcrapPath}\\{thcrapload}\" {settings.DefaultTouhou} {settings.DefaultLang}");
+						if (settings.DefaultTouhou == "")
+						{
+							Usage();
+							return;
+						}
+						else Thc.Launch($"\"{settings.ThcrapPath}\\{thcrapload}\" {Thc.ThArgMaker(settings.DefaultTouhou)} {Thc.JsArgMaker(settings.DefaultLang)}");
 						//Usage();
 						return;
 				}

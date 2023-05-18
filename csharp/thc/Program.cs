@@ -12,69 +12,73 @@ namespace thc
 		/// <param name="args">args from console.</param>
 		public static void Main(string[] args)
 		{
-			//bool verbose = false;
 			string jsonPath = ".\\thc.json";
 			ThSettings settings = FetchFile(jsonPath);
-			FetchSettings(jsonPath, ref settings);
-			if (args.Length == 0)
+			if (settings is null)
 			{
-				Usage();
-				return;
+				settings = new ThSettings(Thc.ThArgMaker("6"));
+				JsonSaver.MakeFile(jsonPath, settings);
 			}
-			if (args[0].Cut(0, 3).Equals("--"))
+			if (args.Length > 0)
 			{
-				if (args.Length == 1)
+				if (args[0].Length >= 3 && args[0].Cut(0, 3).Equals("--")) //@@@@@@@@@@ functions @@@@@@@@@
 				{
-					Usage();
-					return;
-				}
-				switch (args[0])
-				{
-					case "--th":
-						settings.DefaultTouhou = Thc.ThArgMaker(args[1]);
-						return;
-					case "--lang":
-						settings.DefaultLang = Thc.JsArgMaker(args[1]);
-						return;
-					case "--thcrap":
-						if (!Directory.Exists(args[1])) Console.WriteLine("folder not exist or path is not a folder.");
-						else
+					if (args.Length == 2)
+					{
+						switch (args[0])
 						{
-							if (!File.Exists(Path.Combine(args[1], "thcrap_loader.exe")) && !Directory.Exists(Path.Combine(args[1], "config"))) Console.WriteLine("not a thcrap folder.");
-							else settings.ThcrapPath = args[1];
+							case "--th":
+								settings.DefaultTouhou = Thc.ThArgMaker(args[1]);
+								return;
+							case "--lang":
+								settings.DefaultLang = Thc.JsArgMaker(args[1]);
+								return;
+							case "--thcrap":
+								if (!Directory.Exists(args[1])) Console.WriteLine("folder not exist or path is not a folder.");
+								else
+								{
+									if (!File.Exists(Path.Combine(args[1], "thcrap_loader.exe")) && !Directory.Exists(Path.Combine(args[1], "config"))) Console.WriteLine("not a thcrap folder.");
+									else settings.ThcrapPath = args[1];
+								}
+								return;
+							default:
+								Usage();
+								return;
 						}
-						return;
-					default:
+					}
+					else
+					{
 						Usage();
 						return;
+					}
 				}
-			}
-			else if (args[0][0] == '-')
-			{
-//				if (args[0].Equals("-v"))
-//				{
-//					args = args.DeleteValue("-v");
-//					verbose = true;
-//				}
-/*else*/		if (args[0].Equals("-h"))
+				else if (args[0][0] == '-') //@@@@@@@ switches @@@@@@@@
 				{
-					Usage();
-					return;
+					switch (args[0])
+					{
+						case "-s":
+							Console.WriteLine(settings);
+							return;
+						case "-h":
+						default:
+							Usage();
+							return;
+					}
 				}
 			}
-			if (settings is null) settings = new ThSettings(Thc.ThArgMaker("6"));
+			string thcrapload = "thcrap_loader.exe";
 			try
 			{
 				switch (args.Length)
 				{
 					case 2:
-						Thc.Launch($"{settings.ThcrapPath} {Thc.ThArgMaker(args[0])} {Thc.JsArgMaker(args[1])}");
+						Thc.Launch($"\"{settings.ThcrapPath}\\{thcrapload}\" {Thc.ThArgMaker(args[0])} {Thc.JsArgMaker(args[1])}");
 						return;
 					case 1:
-						Thc.Launch($"{settings.ThcrapPath} {Thc.ThArgMaker(args[0])} {settings.DefaultLang}");
+						Thc.Launch($"\"{settings.ThcrapPath}\\{thcrapload}\" {Thc.ThArgMaker(args[0])} {settings.DefaultLang}");
 						return;
 					default:
-						Thc.Launch($"{settings.ThcrapPath} {settings.DefaultTouhou} {settings.DefaultLang}");
+						Thc.Launch($"\"{settings.ThcrapPath}\\{thcrapload}\" {settings.DefaultTouhou} {settings.DefaultLang}");
 						//Usage();
 						return;
 				}
@@ -98,6 +102,7 @@ namespace thc
 				$"\n" +
 				$"\t\tswitches:\n" +
 //				$"\t-v - verbose do things.\n" +
+				$"\t-s - show settings from json file.\n" +
 				$"\t-h - show help.\n" +
 				$"\n" +
 				$"\t\tfunctions:\n" +

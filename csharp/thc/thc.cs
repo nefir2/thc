@@ -38,10 +38,23 @@ namespace thc
 		/// <returns>started <see cref="Process"/>.</returns>
 		/// <exception cref="FileNotFoundException"/>
 		/// <exception cref="Win32Exception"/>
+		/// <exception cref="Exception"/>
 		public static Process Launch(string fileAndArgs)
 		{
-			string file = fileAndArgs.CutToFirst(' ', out int i);
-			string args = fileAndArgs.Substring(i + 1);
+			string file;
+			string args;
+			if (fileAndArgs.Length != 0 && fileAndArgs.StartsWith("\""))
+			{
+				if (fileAndArgs.CountOfChars('\"') % 2 == 1) throw new Exception($"count of '\"' is odd.");
+				fileAndArgs = fileAndArgs.DeleteValue('\"');
+				file = fileAndArgs.CutToFirst('\"', out int i).DeleteValue('\"');
+				args = fileAndArgs.Substring(i + 1).Trim();
+			}
+			else
+			{ 
+				file = fileAndArgs.CutToFirst(' ', out int i);
+				args = fileAndArgs.Substring(i + 1);
+			}
 			Process proc;
 			try
 			{
@@ -119,6 +132,12 @@ namespace thc
 			x.Remove(value);
 			return x.ToArray();
 		}
+		public static string DeleteValue(this string str, char value)
+		{
+			List<char> x = str.ToList();
+			x.Remove(value);
+			return x.ToArray().CharArrayToString(); //.ToString();
+		}
 		/// <summary>
 		/// метод вырезающий подстроку из общей строки по указанным позициям.
 		/// </summary>
@@ -141,6 +160,18 @@ namespace thc
 			string cutted = "";
 			for (int i = start; i < end; i++) cutted += value[i];
 			return cutted;
+		}
+		public static string CharArrayToString(this char[] chars)
+		{
+			string ret = "";
+			for (int i = 0; i < chars.Length; i++) ret += chars[i];
+			return ret;
+		}
+		public static int CountOfChars(this string str, char value)
+		{
+			int c = 0;
+			for (int i = 0; i < str.Length; i++) if (str[i] == value) c++;
+			return c;
 		}
 	}
 }

@@ -17,26 +17,21 @@ namespace thc
 			ThSettings settings = FetchFile(jsonPath);
 			if (settings is null)
 			{
-				settings = new ThSettings(Thc.ThArgMaker("6")); //Thc.ThArgMaker("6")
+				settings = new ThSettings(Thc.ThArgMaker("6"));
 				JsonSaver.MakeFile(jsonPath, settings);
 			}
 			if (args.Length > 0)
 			{
-				//Console.WriteLine($"args[0]: {args[0]}\nargs[0].Length: {args[0].Length}\nargs[0].Length >= 2: {args[0].Length >= 2}\nargs[0].Cut(0, 2): {args[0].Cut(0, 2)}\nargs[0].Cut(0, 2).Equals(\"--\"): {args[0].Cut(0, 2).Equals("--")}\n");
 				if (args[0].Length >= 2 && args[0].Cut(0, 2).Equals("--")) //@@@@@@@@@@ functions @@@@@@@@@
 				{
-					//Console.WriteLine($"args.Length == 2: {args.Length == 2}\n");
 					if (args.Length == 2)
 					{
-						//Console.WriteLine($"args[1]: {args[1]}\n");
 						switch (args[0])
 						{
 							case "--th":
 								settings.DefaultTouhou = Thc.ThArgMaker(args[1]);
-								//Console.WriteLine($"settings.DefaultTouhou: {settings.DefaultTouhou}\nsettings:\n{settings}\n");
 								JsonSaver.MakeFile(jsonPath, settings);
-                                //Console.WriteLine($"jsonPath: {jsonPath}\n");
-                                return;
+								return;
 							case "--lang":
 								settings.DefaultLang = Thc.JsArgMaker(args[1]);
 								JsonSaver.MakeFile(jsonPath, settings);
@@ -95,7 +90,6 @@ namespace thc
 							return;
 						}
 						else Thc.Launch($"\"{settings.ThcrapPath}\\{thcrapload}\" {Thc.ThArgMaker(settings.DefaultTouhou)} {Thc.JsArgMaker(settings.DefaultLang)}");
-						//Usage();
 						return;
 				}
 			}
@@ -117,7 +111,6 @@ namespace thc
 				$"\tlang - language for game from config json files (default=ru.js).\n" +
 				$"\n" +
 				$"\t\tswitches:\n" +
-//				$"\t-v - verbose do things.\n" +
 				$"\t-s - show settings from json file.\n" +
 				$"\t-h - show help.\n" +
 				$"\n" +

@@ -130,35 +130,6 @@ namespace thc
 			Console.Write(message);
 			return Console.ReadLine();
 		}
-		/// <summary>
-		/// fetching settings in <paramref name="settings"/> or in <paramref name="filePath"/>.
-		/// </summary>
-		/// <param name="filePath">path to json file.</param>
-		/// <param name="settings">object of settings.</param>
-		/// <param name="verbose">if <see langword="true"/> shows comments.</param>
-		/// <returns>if file was read then returns <see langword="true"/>.</returns>
-		public static bool FetchSettings(string filePath, ref ThSettings settings, bool verbose = false)
-		{
-			bool isRead;
-			if (verbose) Console.WriteLine($"checking for existing {filePath} and not nulled settings");
-			if (!File.Exists(filePath) && !(settings is null))
-			{
-				if (verbose) Console.WriteLine($"{filePath} not exist. making {filePath} file, and pushing settings into it settings.\n\tsettings:\n{settings}");
-				JsonSaver.MakeFile(filePath, settings);
-				if (verbose) Console.WriteLine("done.");
-				isRead = false;
-			}
-			else
-			{
-				if (verbose && settings is null) Console.WriteLine("settings is null. reading file into it.");
-				else if (verbose && File.Exists(filePath)) Console.WriteLine($"{filePath} is exist. reading it into settings.");
-				settings = JsonSaver.ReadFile<ThSettings>(filePath);
-				if (verbose) Console.WriteLine("done.");
-				isRead = true;
-			}
-			if (verbose) Console.WriteLine($"is read from file: {isRead}.");
-			return isRead;
-		}
 		public static ThSettings FetchFile(string filePath)
 		{
 			if (!File.Exists(filePath)) return null;

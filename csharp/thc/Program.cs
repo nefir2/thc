@@ -29,7 +29,7 @@ namespace thc
 			{
 				if (!(args.Length != 0 && args[0].Equals("--repair")))
 				{
-					Console.WriteLine($"json file with path {jsonPath} is corrupted. delete this file to make new json file with default settings, or repair it.\n\nexception message: {ex.Message}\n");
+					Console.WriteLine($"json file with path {jsonPath} is corrupted.\nuse \"{Assembly.GetExecutingAssembly().Location} --repair\" to fix json file by yourself.\nuse \"{Assembly.GetExecutingAssembly().Location} --repair -d\" to return settings to default.\n\nexception message: {ex.Message}\n"); //delete this file to make new json file with default settings, or repair it
 					return;
 				}
 			}

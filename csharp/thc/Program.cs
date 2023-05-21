@@ -1,6 +1,7 @@
 ﻿using System; //cw
 using System.IO; //file, directory
 using System.Reflection; //assembly
+using System.Text.Json; //jsonexception
 namespace thc
 {
 	/// <summary> main class. </summary>
@@ -17,12 +18,20 @@ namespace thc
 			string point = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 			Directory.CreateDirectory(Path.Combine(point, settingsFolderName));
 			string jsonPath = $@"{point}\{settingsFolderName}\{Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location)}.json";
-
-			ThSettings settings = FetchFile(jsonPath);
-			if (settings is null)
+			
+			ThSettings settings = new ThSettings(Thc.ThArgMaker("6"), thcrapPath: point); ;
+			try
 			{
-				settings = new ThSettings(Thc.ThArgMaker("6"), thcrapPath: point);
-				JsonSaver.MakeFile(jsonPath, settings);
+				settings = FetchFile(jsonPath);
+				if (settings is null) JsonSaver.MakeFile(jsonPath, settings);
+			}
+			catch (Exception ex)
+			{
+				if (!(args.Length != 0 && args[0].Equals("--repair")))
+				{
+					Console.WriteLine($"json file with path {jsonPath} is corrupted. delete this file to make new json file with default settings, or repair it.\n\nexception message: {ex.Message}\n");
+					return;
+				}
 			}
 
 			if (args.Length > 0)
@@ -38,6 +47,9 @@ namespace thc
 								return;
 							case "--test":
 								Thc.Launch($"{settings.ThcrapPath}\\bin\\thcrap_test.exe");
+								return;
+							case "--repair":
+								Thc.Launch($"notepad {jsonPath}");
 								return;
 							default:
 								Usage();
@@ -71,6 +83,15 @@ namespace thc
 								return;
 							case "--configure":
 								if (args[1].Equals("-o") || args[1].Equals("-old")) Thc.Launch($"{settings.ThcrapPath}\\bin\\thcrap_configure.exe");
+								else Usage();
+								return;
+							case "--repair":
+								if (args[1].Equals("-d") || args[1].Equals("-delete") || args[1].Equals("-default"))
+								{
+									Directory.Delete(Path.Combine(point, settingsFolderName), true);
+									Directory.CreateDirectory(Path.Combine(point, settingsFolderName));
+									JsonSaver.MakeFile(jsonPath, settings);
+								}
 								else Usage();
 								return;
 							default:
@@ -151,10 +172,11 @@ namespace thc
 				$"\n"																									+
 				$"functions:\n"																							+
 				$"\t--th {{num}} - set number of default th.\n"															+
-				$"\t--lang[uage] {{str}} - set default language file.\n"														+
+				$"\t--lang[uage] {{str}} - set default language file.\n"												+
 				$"\t--thcrap {{path}} - set folder where can be found thcrap_loader.exe\n"								+
 				$"\t--test - launch thcrap_test.\n"																		+
-				$"\t--configure [-o[ld]] - launch thcrap_configure. -o[ld] - launch old version.\n"
+				$"\t--configure [-o[ld]] - launch thcrap_configure. -o[ld] - launch old version.\n"						+
+				$"\t--repair [-d[efault]] - repair json file if it broken. -d[efault] - returns default settings.\n"
 			);
 		}
 		/// <summary>
@@ -167,10 +189,27 @@ namespace thc
 			Console.Write(message);
 			return Console.ReadLine();
 		}
+		/// <summary>
+		/// checking for existings Json file.
+		/// </summary>
+		/// <remarks>
+		/// if it exists, returns data from it. else returns <see langword="null"/>. <br/>
+		/// if json data file corrupted, throws <see cref="JsonException"/>.
+		/// </remarks>
+		/// <param name="filePath">path to json file.</param>
+		/// <returns>data from json file as <see cref="ThSettings"/>.</returns>
+		/// <exception cref="JsonException"></exception>
 		public static ThSettings FetchFile(string filePath)
 		{
-			if (!File.Exists(filePath)) return null;
-			else return JsonSaver.ReadFile<ThSettings>(filePath);
+			try
+			{
+				if (!File.Exists(filePath)) return null;
+				else return JsonSaver.ReadFile<ThSettings>(filePath);
+			}
+			catch (Exception ex)
+			{
+				throw new JsonException(ex.Message, ex);
+			}
 		}
 	}
 }

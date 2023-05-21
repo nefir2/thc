@@ -87,7 +87,7 @@ namespace thc
 		/// <exception cref="Exception"></exception>
 		public static string ThArgMaker(string numberOfTh)
 		{
-			if (numberOfTh.StartsWith("th")) return numberOfTh;
+			if (numberOfTh.StartsWith("th") && int.TryParse(numberOfTh[3].ToString(), out int _)) return numberOfTh;
 			else if (int.TryParse(numberOfTh, out int i))
 			{
 				if (i >= 75) return $"th{i:d3}";

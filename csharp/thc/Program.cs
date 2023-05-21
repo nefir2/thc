@@ -53,6 +53,7 @@ namespace thc
 								JsonSaver.MakeFile(jsonPath, settings);
 								return;
 							case "--lang":
+							case "--language":
 								settings.DefaultLang = Thc.JsArgMaker(args[1]);
 								JsonSaver.MakeFile(jsonPath, settings);
 								return;
@@ -150,7 +151,7 @@ namespace thc
 				$"\n"																									+
 				$"functions:\n"																							+
 				$"\t--th {{num}} - set number of default th.\n"															+
-				$"\t--lang {{str}} - set default language file.\n"														+
+				$"\t--lang[uage] {{str}} - set default language file.\n"														+
 				$"\t--thcrap {{path}} - set folder where can be found thcrap_loader.exe\n"								+
 				$"\t--test - launch thcrap_test.\n"																		+
 				$"\t--configure [-o[ld]] - launch thcrap_configure. -o[ld] - launch old version.\n"

@@ -12,19 +12,36 @@ namespace thc
 		/// <param name="args">args from console.</param>
 		public static void Main(string[] args)
 		{
-			string jsonPath = $".\\{Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location)}.json";
+			string settingsFolderName = "thc config";
 			string thcrapload = "thcrap_loader.exe";
+			string point = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+			Directory.CreateDirectory(Path.Combine(point, settingsFolderName));
+			string jsonPath = $@"{point}\{settingsFolderName}\{Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location)}.json";
+
 			ThSettings settings = FetchFile(jsonPath);
 			if (settings is null)
 			{
-				settings = new ThSettings(Thc.ThArgMaker("6"));
+				settings = new ThSettings(Thc.ThArgMaker("6"), thcrapPath: point);
 				JsonSaver.MakeFile(jsonPath, settings);
 			}
+
 			if (args.Length > 0)
 			{
 				if (args[0].Length >= 2 && args[0].Cut(0, 2).Equals("--")) //@@@@@@@@@@ functions @@@@@@@@@
 				{
-					if (args.Length == 2)
+					if (args.Length == 1) //function without additional arguments
+					{
+						switch (args[0])
+						{
+							case "--configure":
+								Thc.Launch($"{settings.ThcrapPath}\\bin\\thcrap_configure_v3.exe");
+								return;
+							default:
+								Usage();
+								return;
+						}
+					}
+					else if (args.Length == 2) //function and argument for it
 					{
 						switch (args[0])
 						{
@@ -48,6 +65,12 @@ namespace thc
 									}
 								}
 								return;
+							case "--test":
+								Thc.Launch($"\"{settings.ThcrapPath}\"\\bin\\thcrap_test.exe");
+								return;
+							case "--configure":
+								if (args[1].Contains("-o")) Thc.Launch($"\"{settings.ThcrapPath}\"\\bin\\thcrap_configure.exe");
+								return;
 							default:
 								Usage();
 								return;
@@ -65,6 +88,11 @@ namespace thc
 					{
 						case "-s":
 							Console.WriteLine(settings);
+							return;
+						case "-l":
+							string[] langs = Directory.GetFiles(Path.Combine(settings.ThcrapPath, "config"));
+							Console.WriteLine("languages:");
+							for (int i = 0; i < langs.Length; i++) if (Path.GetFileName(langs[i]) != "config.js" && Path.GetFileName(langs[i]) != "games.js" && Path.GetFileName(langs[i]) != "mods.js") Console.WriteLine($"\t{Path.GetFileName(langs[i])}");
 							return;
 						case "-h":
 						default:
@@ -105,19 +133,22 @@ namespace thc
 		{
 			Console.WriteLine
 			(
-				$"Usage: {Assembly.GetExecutingAssembly().Location} [-{{switches}}|--{{functions}}] {{th}} [lang]\n" +
-				$"\topening touhou game with chosen number and default language.\n" +
-				$"\tth - number of touhou game. may be like \"th06\" or like \"06\".\n" +
-				$"\tlang - language for game from config json files (default=ru.js).\n" +
-				$"\n" +
-				$"\t\tswitches:\n" +
-				$"\t-s - show settings from json file.\n" +
-				$"\t-h - show help.\n" +
-				$"\n" +
-				$"\t\tfunctions:\n" +
-				$"\t--th {{num}} - set number of default th.\n" +
-				$"\t--lang {{str}} - set default language file.\n" +
-				$"\t--thcrap {{path}} - set folder where can be found thcrap_loader.exe\n"
+				$"Usage: {Assembly.GetExecutingAssembly().Location} [-{{switches}}|--{{functions}}] {{th}} [lang]\n"	+
+				$"\topening touhou game with chosen number and default language.\n"										+
+				$"\tth - number of touhou game. may be like \"th06\" or like \"6\" (default=th06).\n"					+
+				$"\tlang - language for game from config json files (default=en.js).\n"									+
+				$"\n"																									+
+				$"\t\tswitches:\n"																						+
+				$"\t-h - show help.\n"																					+
+				$"\t-s - show settings from json file.\n"																+
+				$"\t-l - show languages for thcrap_loader.\n"															+
+				$"\n"																									+
+				$"\t\tfunctions:\n"																						+
+				$"\t--th {{num}} - set number of default th.\n"															+
+				$"\t--lang {{str}} - set default language file.\n"														+
+				$"\t--thcrap {{path}} - set folder where can be found thcrap_loader.exe\n"								+
+				$"\t--test - launch thcrap_test.\n"																		+
+				$"\t--configure [-o[ld]] - launch thcrap_configure. -o[ld] - launch old version.\n"
 			);
 		}
 		/// <summary>

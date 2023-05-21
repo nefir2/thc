@@ -36,6 +36,9 @@ namespace thc
 							case "--configure":
 								Thc.Launch($"{settings.ThcrapPath}\\bin\\thcrap_configure_v3.exe");
 								return;
+							case "--test":
+								Thc.Launch($"{settings.ThcrapPath}\\bin\\thcrap_test.exe");
+								return;
 							default:
 								Usage();
 								return;
@@ -65,11 +68,9 @@ namespace thc
 									}
 								}
 								return;
-							case "--test":
-								Thc.Launch($"\"{settings.ThcrapPath}\"\\bin\\thcrap_test.exe");
-								return;
 							case "--configure":
-								if (args[1].Contains("-o")) Thc.Launch($"\"{settings.ThcrapPath}\"\\bin\\thcrap_configure.exe");
+								if (args[1].Equals("-o") || args[1].Equals("-old")) Thc.Launch($"{settings.ThcrapPath}\\bin\\thcrap_configure.exe");
+								else Usage();
 								return;
 							default:
 								Usage();
@@ -87,14 +88,18 @@ namespace thc
 					switch (args[0])
 					{
 						case "-s":
+						case "-settings":
 							Console.WriteLine(settings);
 							return;
 						case "-l":
+						case "-langs":
+						case "-languages":
 							string[] langs = Directory.GetFiles(Path.Combine(settings.ThcrapPath, "config"));
 							Console.WriteLine("languages:");
 							for (int i = 0; i < langs.Length; i++) if (Path.GetFileName(langs[i]) != "config.js" && Path.GetFileName(langs[i]) != "games.js" && Path.GetFileName(langs[i]) != "mods.js") Console.WriteLine($"\t{Path.GetFileName(langs[i])}");
 							return;
 						case "-h":
+						case "-help":
 						default:
 							Usage();
 							return;
@@ -138,12 +143,12 @@ namespace thc
 				$"\tth - number of touhou game. may be like \"th06\" or like \"6\" (default=th06).\n"					+
 				$"\tlang - language for game from config json files (default=en.js).\n"									+
 				$"\n"																									+
-				$"\t\tswitches:\n"																						+
-				$"\t-h - show help.\n"																					+
-				$"\t-s - show settings from json file.\n"																+
-				$"\t-l - show languages for thcrap_loader.\n"															+
+				$"switches:\n"																							+
+				$"\t-h[elp] - show help.\n"																				+
+				$"\t-s[ettings] - show settings from json file.\n"														+
+				$"\t-l[anguages] - show languages for thcrap_loader.\n"													+
 				$"\n"																									+
-				$"\t\tfunctions:\n"																						+
+				$"functions:\n"																							+
 				$"\t--th {{num}} - set number of default th.\n"															+
 				$"\t--lang {{str}} - set default language file.\n"														+
 				$"\t--thcrap {{path}} - set folder where can be found thcrap_loader.exe\n"								+

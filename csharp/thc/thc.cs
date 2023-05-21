@@ -20,7 +20,7 @@ namespace thc
 		{
 			string ret = "";
 			firstSymbol = -1;
-			for (int i = 0; i < str.Length - 1; i++)
+			for (int i = 0; i < str.Length; i++)
 			{
 				if (str[i] != symbol) ret += str[i];
 				else
@@ -50,10 +50,15 @@ namespace thc
 				file = fileAndArgs.CutToFirst('\"', out int i).DeleteValue('\"');
 				args = fileAndArgs.Substring(i + 1).Trim();
 			}
-			else
+			else if (fileAndArgs.Contains(' '))
 			{ 
 				file = fileAndArgs.CutToFirst(' ', out int i);
 				args = fileAndArgs.Substring(i + 1);
+			}
+			else
+			{
+				file = fileAndArgs;
+				args = string.Empty;
 			}
 			Process proc;
 			try

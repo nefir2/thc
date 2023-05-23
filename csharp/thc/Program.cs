@@ -23,7 +23,11 @@ namespace thc
 			try
 			{
 				settings = FetchFile(jsonPath);
-				if (settings is null) JsonSaver.MakeFile(jsonPath, settings);
+				if (settings is null)
+				{
+					settings = new ThSettings(Thc.ThArgMaker("6"), thcrapPath: point);
+					JsonSaver.MakeFile(jsonPath, settings);
+				}
 			}
 			catch (Exception ex)
 			{

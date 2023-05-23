@@ -19,7 +19,7 @@ namespace thc
 			Directory.CreateDirectory(Path.Combine(point, settingsFolderName));
 			string jsonPath = $@"{point}\{settingsFolderName}\{Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location)}.json";
 			
-			ThSettings settings = new ThSettings(Thc.ThArgMaker("6"), thcrapPath: point); ;
+			ThSettings settings = new ThSettings(Thc.ThArgMaker("6"), thcrapPath: point);
 			try
 			{
 				settings = FetchFile(jsonPath);

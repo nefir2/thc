@@ -3,16 +3,34 @@ using System.Text.Json; //jsonserializer
 using System.Threading.Tasks; //task<t>
 namespace thc
 {
+	/// <summary>
+	/// class with methods that making or reading json file.
+	/// </summary>
 	public static class JsonSaver
 	{
+		#region make file
+		/// <summary>
+		/// making json file and writing object <typeparamref name="T"/> into it.
+		/// </summary>
+		/// <typeparam name="T">object of type <typeparamref name="T"/> that will be saved in file.</typeparam>
+		/// <param name="path">path to json file where will be saved object <typeparamref name="T"/>.</param>
+		/// <param name="saveToJson">object <typeparamref name="T"/> to save.</param>
 		public static void MakeFile<T>(string path, T saveToJson)
 		{
-			using (FileStream x = new FileStream(path, FileMode.OpenOrCreate)) JsonSerializer.SerializeAsync(x, saveToJson, typeof(T), new JsonSerializerOptions() { WriteIndented = true });
+			using (FileStream x = new FileStream(path, FileMode.OpenOrCreate)) JsonSerializer.Serialize(x, saveToJson, typeof(T), new JsonSerializerOptions() { WriteIndented = true });
 		}
+		/// <summary>
+		/// async making json file and writing object <typeparamref name="T"/> into it.
+		/// </summary>
+		/// <typeparam name="T">object of type <typeparamref name="T"/> that will be saved in file.</typeparam>
+		/// <param name="path">path to json file where will be saved object <typeparamref name="T"/>.</param>
+		/// <param name="saveToJson">object <typeparamref name="T"/> to save.</param>
 		public static async void MakeFileAsync<T>(string path, T saveToJson)
 		{
 			using (FileStream x = new FileStream(path, FileMode.OpenOrCreate)) await JsonSerializer.SerializeAsync(x, saveToJson, typeof(T), new JsonSerializerOptions() { WriteIndented = true });
 		}
+		#endregion
+		#region read file
 		/// <summary>
 		/// reading json file to object <typeparamref name="T"/>.
 		/// </summary>
@@ -63,5 +81,6 @@ namespace thc
 				throw new JsonException(ex.Message, ex);
 			}
 		}
+		#endregion
 	}
 }

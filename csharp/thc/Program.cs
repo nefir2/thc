@@ -2,40 +2,86 @@
 using System.IO; //file, directory
 using System.Reflection; //assembly
 using System.Text.Json; //jsonexception
+
 namespace thc
 {
-	/// <summary> main class. </summary>
+	/// <summary>
+	/// main class.
+	/// </summary>
 	internal static class Program
 	{
+		#region fields
+		/// <summary>
+		/// path to folder where placed this program.
+		/// </summary>
+		static readonly string point;
+		/// <summary>
+		/// name of program that must be named <c>thcrap_loader.exe</c>
+		/// </summary>
+		static readonly string thcrapload;
+		/// <summary>
+		/// name of folder for json settings.
+		/// </summary>
+		static readonly string settingsFolderName;
+		/// <summary>
+		/// path to folder with json file.
+		/// </summary>
+		static readonly string settingsFolderPath;
+		/// <summary>
+		/// path to json file with settings.
+		/// </summary>
+		static readonly string jsonPath;
+		/// <summary>
+		/// instance of <see cref="ThSettings"/> for saving in json file.
+		/// </summary>
+		static ThSettings settings;
+		#endregion
+		#region ctor
+		static Program()
+		{
+			point = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+			thcrapload = "thcrap_loader.exe";
+			settingsFolderName = "thc config";
+			settingsFolderPath = Path.Combine(point, settingsFolderName);
+			jsonPath = $@"{settingsFolderPath}\{Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location)}.json";
+
+			Directory.CreateDirectory(settingsFolderPath);
+		}
+		#endregion
+		#region methods
 		/// <summary>
 		/// main method.
 		/// </summary>
 		/// <param name="args">args from console.</param>
 		public static void Main(string[] args)
 		{
-			string settingsFolderName = "thc config";
-			string thcrapload = "thcrap_loader.exe";
-			string point = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-			Directory.CreateDirectory(Path.Combine(point, settingsFolderName));
-			string jsonPath = $@"{point}\{settingsFolderName}\{Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location)}.json";
-			
-			ThSettings settings = new ThSettings(Thc.ThArgMaker("6"), thcrapPath: point);
 			try
 			{
-				settings = FetchFile(jsonPath);
+				settings = Thc.FetchFile(jsonPath);
 				if (settings is null)
 				{
 					settings = new ThSettings(Thc.ThArgMaker("6"), thcrapPath: point);
 					JsonSaver.MakeFile(jsonPath, settings);
+				}				
+			}
+			catch (JsonException ex)
+			{
+				if (!(args.Length != 0 && args[0].Equals("--repair")))
+				{
+					Console.WriteLine
+					(
+						$"json file with path {jsonPath} is corrupted.\n" +
+						$"use \"{Assembly.GetExecutingAssembly().Location} --repair\" to fix json file by yourself.\n" +
+						$"use \"{Assembly.GetExecutingAssembly().Location} --repair -d\" to return settings to default.\n" +
+						$"\n" +
+						$"exception message: {ex.Message}\n"
+					);
+					return;
 				}
 			}
 			catch (Exception ex)
 			{
-				if (!(args.Length != 0 && args[0].Equals("--repair")))
-				{
-					Console.WriteLine($"json file with path {jsonPath} is corrupted.\nuse \"{Assembly.GetExecutingAssembly().Location} --repair\" to fix json file by yourself.\nuse \"{Assembly.GetExecutingAssembly().Location} --repair -d\" to return settings to default.\n\nexception message: {ex.Message}\n"); //delete this file to make new json file with default settings, or repair it
-					return;
-				}
+				Console.WriteLine(ex.Message);
 			}
 
 			if (args.Length > 0)
@@ -92,8 +138,8 @@ namespace thc
 							case "--repair":
 								if (args[1].Equals("-d") || args[1].Equals("-delete") || args[1].Equals("-default"))
 								{
-									Directory.Delete(Path.Combine(point, settingsFolderName), true);
-									Directory.CreateDirectory(Path.Combine(point, settingsFolderName));
+									Directory.Delete(settingsFolderPath, true);
+									Directory.CreateDirectory(settingsFolderPath);
 									JsonSaver.MakeFile(jsonPath, settings);
 								}
 								else Usage();
@@ -122,7 +168,15 @@ namespace thc
 						case "-languages":
 							string[] langs = Directory.GetFiles(Path.Combine(settings.ThcrapPath, "config"));
 							Console.WriteLine("languages:");
-							for (int i = 0; i < langs.Length; i++) if (Path.GetFileName(langs[i]) != "config.js" && Path.GetFileName(langs[i]) != "games.js" && Path.GetFileName(langs[i]) != "mods.js") Console.WriteLine($"\t{Path.GetFileName(langs[i])}");
+							for (int i = 0; i < langs.Length; i++)
+							{
+								if
+								(
+									Path.GetFileName(langs[i]) != "config.js" &&
+									Path.GetFileName(langs[i]) != "games.js" &&
+									Path.GetFileName(langs[i]) != "mods.js"
+								) Console.WriteLine($"\t{Path.GetFileName(langs[i])}");
+							}
 							return;
 						case "-h":
 						case "-help":
@@ -134,7 +188,7 @@ namespace thc
 			}
 			try
 			{
-				switch (args.Length)
+				switch (args.Length) //@@@@@@@ main arguments @@@@@@@@
 				{
 					case 2:
 						Thc.Launch($"\"{settings.ThcrapPath}\\{thcrapload}\" {Thc.ThArgMaker(args[0])} {Thc.JsArgMaker(args[1])}");
@@ -142,13 +196,16 @@ namespace thc
 					case 1:
 						Thc.Launch($"\"{settings.ThcrapPath}\\{thcrapload}\" {Thc.ThArgMaker(args[0])} {Thc.JsArgMaker(settings.DefaultLang)}");
 						return;
-					default:
+					case 0:
 						if (settings.DefaultTouhou == "")
 						{
 							Usage();
 							return;
 						}
 						else Thc.Launch($"\"{settings.ThcrapPath}\\{thcrapload}\" {Thc.ThArgMaker(settings.DefaultTouhou)} {Thc.JsArgMaker(settings.DefaultLang)}");
+						return;
+					default:
+						Usage();
 						return;
 				}
 			}
@@ -164,56 +221,27 @@ namespace thc
 		{
 			Console.WriteLine
 			(
-				$"Usage: {Assembly.GetExecutingAssembly().Location} [-{{switches}}|--{{functions}}] {{th}} [lang]\n"	+
-				$"\topening touhou game with chosen number and default language.\n"										+
-				$"\tth - number of touhou game. may be like \"th06\" or like \"6\" (default=th06).\n"					+
-				$"\tlang - language for game from config json files (default=en.js).\n"									+
-				$"\n"																									+
-				$"switches:\n"																							+
-				$"\t-h[elp] - show help.\n"																				+
-				$"\t-s[ettings] - show settings from json file.\n"														+
-				$"\t-l[anguages] - show languages for thcrap_loader.\n"													+
-				$"\n"																									+
-				$"functions:\n"																							+
-				$"\t--th {{num}} - set number of default th.\n"															+
-				$"\t--lang[uage] {{str}} - set default language file.\n"												+
-				$"\t--thcrap {{path}} - set folder where can be found thcrap_loader.exe\n"								+
-				$"\t--test - launch thcrap_test.\n"																		+
-				$"\t--configure [-o[ld]] - launch thcrap_configure. -o[ld] - launch old version.\n"						+
-				$"\t--repair [-d[efault]] - repair json file if it broken. -d[efault] - returns default settings.\n"
+				"Usage: " + Assembly.GetExecutingAssembly().Location + " [-{switches}|--{functions}|{th}] [lang]\n"		+
+				"\topening touhou game with chosen number and default language.\n"										+
+				"\tth - number of touhou game. may be like \"th06\" or like \"6\" (default=th06).\n"					+
+				"\tlang - language for game from config json files (default=en.js).\n"									+
+				"\n"																									+
+				"switches:\n"																							+
+				"\t-h[elp] - show help.\n"																				+
+				"\t-s[ettings] - show settings from json file.\n"														+
+				"\t-l[anguages] - show languages for thcrap_loader.exe\n"												+
+				"\n"																									+
+				"functions:\n"																							+
+				"\t--th {num} - set number of default touhou.\n"														+
+				"\t--lang[uage] {str} - set default language file.\n"													+
+				"\t--thcrap {path} - set folder where can be found thcrap_loader.exe\n"									+
+				"\t--test - launch thcrap_test.\n"																		+
+				"\t--configure [-o[ld]] - launch thcrap_configure.\n"													+
+				"\t\t-o[ld] - launch old version.\n"																	+
+				"\t--repair [-d[efault]|-e[mpty]] - repair json file if it broken.\n"									+
+				"\t\t-d[efault] - returns default settings.\n"
 			);
 		}
-		/// <summary>
-		/// shows and waiting for data from console.
-		/// </summary>
-		/// <param name="message">message why input.</param>
-		/// <returns>returns inputted <see cref="string"/>.</returns>
-		public static string GetString(string message)
-		{
-			Console.Write(message);
-			return Console.ReadLine();
-		}
-		/// <summary>
-		/// checking for existings Json file.
-		/// </summary>
-		/// <remarks>
-		/// if it exists, returns data from it. else returns <see langword="null"/>. <br/>
-		/// if json data file corrupted, throws <see cref="JsonException"/>.
-		/// </remarks>
-		/// <param name="filePath">path to json file.</param>
-		/// <returns>data from json file as <see cref="ThSettings"/>.</returns>
-		/// <exception cref="JsonException"></exception>
-		public static ThSettings FetchFile(string filePath)
-		{
-			try
-			{
-				if (!File.Exists(filePath)) return null;
-				else return JsonSaver.ReadFile<ThSettings>(filePath);
-			}
-			catch (Exception ex)
-			{
-				throw new JsonException(ex.Message, ex);
-			}
-		}
+		#endregion
 	}
 }

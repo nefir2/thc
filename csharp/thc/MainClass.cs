@@ -78,9 +78,9 @@ namespace thc
 			configFolderName = "config";
 
 			point = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+			settingsFolderName = Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location) + " config";
 			settingsFolderPath = Path.Combine(point, settingsFolderName);
 			jsonPath = $@"{settingsFolderPath}\{Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location)}.json";
-			settingsFolderName = $"{Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location)} config";
 
 			Directory.CreateDirectory(settingsFolderPath);
 		}

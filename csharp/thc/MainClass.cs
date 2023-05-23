@@ -13,13 +13,49 @@ namespace thc
 	{
 		#region fields
 		/// <summary>
+		/// instance of <see cref="ThSettings"/> for saving in json file.
+		/// </summary>
+		static ThSettings settings;
+		/// <summary>
 		/// path to folder where placed this program.
 		/// </summary>
 		static readonly string point;
 		/// <summary>
+		/// name of program that help edit json file when it need to be repaired.
+		/// </summary>
+		static readonly string editor;
+		/// <summary>
+		/// name of folder bin in thcrap folder.
+		/// </summary>
+		static readonly string binName;
+		/// <summary>
+		/// name of program that testing dependecies in thcrap/bin folder.
+		/// </summary>
+		static readonly string testName;
+		/// <summary>
+		/// path to json file with settings.
+		/// </summary>
+		static readonly string jsonPath;
+		/// <summary>
 		/// name of program that must be named <c>thcrap_loader.exe</c>
 		/// </summary>
 		static readonly string thcrapload;
+		/// <summary>
+		/// name of program for configuration thcrap (old version) in thcrap/bin folder.
+		/// </summary>
+		static readonly string configureName;
+		/// <summary>
+		/// array of js(on) files that is not a languages.
+		/// </summary>
+		static readonly string[] notLangNames;
+		/// <summary>
+		/// name of program for configuration thcrap (new version) in thcrap/bin folder.
+		/// </summary>
+		static readonly string configureV3Name;
+		/// <summary>
+		/// name of config folder in thcrap folder.
+		/// </summary>
+		static readonly string configFolderName;
 		/// <summary>
 		/// name of folder for json settings.
 		/// </summary>
@@ -28,42 +64,6 @@ namespace thc
 		/// path to folder with json file.
 		/// </summary>
 		static readonly string settingsFolderPath;
-		/// <summary>
-		/// path to json file with settings.
-		/// </summary>
-		static readonly string jsonPath;
-		/// <summary>
-		/// name of config folder in thcrap folder.
-		/// </summary>
-		static readonly string configFolderName;
-		/// <summary>
-		/// name of folder bin in thcrap folder.
-		/// </summary>
-		static readonly string binName;
-		/// <summary>
-		/// name of program for configuration thcrap (old version) in thcrap/bin folder.
-		/// </summary>
-		static readonly string configureName;
-		/// <summary>
-		/// name of program for configuration thcrap (new version) in thcrap/bin folder.
-		/// </summary>
-		static readonly string configureV3Name;
-		/// <summary>
-		/// name of program that testing dependecies in thcrap/bin folder.
-		/// </summary>
-		static readonly string testName;
-		/// <summary>
-		/// name of program that help edit json file when it need to be repaired.
-		/// </summary>
-		static readonly string editor;
-		/// <summary>
-		/// array of js(on) files that is not a languages.
-		/// </summary>
-		static readonly string[] notLangNames;
-		/// <summary>
-		/// instance of <see cref="ThSettings"/> for saving in json file.
-		/// </summary>
-		static ThSettings settings;
 		#endregion
 		#region ctors
 		static MainClass()

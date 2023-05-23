@@ -121,6 +121,8 @@ namespace thc
 				Console.WriteLine(ex.Message);
 			}
 
+			if (!File.Exists(Path.Combine(settings.ThcrapPath, thcrapload)) && !Directory.Exists(Path.Combine(settings.ThcrapPath, configFolderName))) Console.WriteLine("not a thcrap folder.\nuse \"thc.exe --thcrap {path}\" to configure path to thcrap folder.");
+
 			if (args.Length > 0)
 			{
 				if (args[0].Length >= 2 && args[0].Cut(0, 2).Equals("--")) //@@@@@@@@@@ functions @@@@@@@@@
@@ -211,8 +213,16 @@ namespace thc
 							Console.WriteLine("languages:");
 							for (int i = 0; i < langs.Length; i++)
 							{
-								foreach (string notLang in notLangNames) if (Path.GetFileName(langs[i]) == notLang) return;
-								Console.WriteLine($"\t{Path.GetFileName(langs[i])}");
+								bool toNext = false;
+								foreach (string notLang in notLangNames)
+								{
+									if (Path.GetFileName(langs[i]) == notLang)
+									{
+										toNext = true;
+										break;
+									}
+								}
+								if (!toNext) Console.WriteLine("\t" + Path.GetFileName(langs[i]));
 							}
 							return;
 						case "-h":
@@ -258,25 +268,25 @@ namespace thc
 		{
 			Console.WriteLine
 			(
-				"Usage: " + Assembly.GetExecutingAssembly().Location + " [-{switches}|--{functions}|{th}] [lang]\n"		+
-				"\topening touhou game with chosen number and default language.\n"										+
-				"\tth - number of touhou game. may be like \"th06\" or like \"6\" (default=th06).\n"					+
-				"\tlang - language for game from config json files (default=en.js).\n"									+
-				"\n"																									+
-				"switches:\n"																							+
-				"\t-h[elp] - show help.\n"																				+
-				"\t-s[ettings] - show settings from json file.\n"														+
-				"\t-l[anguages] - show languages for thcrap_loader.exe\n"												+
-				"\n"																									+
-				"functions:\n"																							+
-				"\t--th {num} - set number of default touhou.\n"														+
-				"\t--lang[uage] {str} - set default language file.\n"													+
-				"\t--thcrap {path} - set folder where can be found thcrap_loader.exe\n"									+
-				"\t--test - launch thcrap_test.exe\n"																	+
-				"\t--configure [-o[ld]] - launch thcrap_configure.exe\n"												+
-				"\t\t-o[ld] - launch old version.\n"																	+
-				"\t--repair [-d[efault]|-e[mpty]] - repair json file if it broken.\n"									+
-				"\t\t-d[efault] - returns default settings.\n" +
+				"Usage: " + Assembly.GetExecutingAssembly().Location + " [-{switches}|--{functions} [data]|{th} [lang]]\n"		+
+				"\topening touhou game with chosen number and default language.\n"												+
+				"\tth - number of touhou game. may be like \"th06\" or like \"6\" (default=th06).\n"							+
+				"\tlang - language for game from config json files (default=en.js).\n"											+
+				"\n"																											+
+				"switches:\n"																									+
+				"\t-h[elp] - show help.\n"																						+
+				"\t-s[ettings] - show settings from json file.\n"																+
+				"\t-l[anguages] - show languages for thcrap_loader.exe\n"														+
+				"\n"																											+
+				"functions:\n"																									+
+				"\t--th {num} - set number of default touhou.\n"																+
+				"\t--lang[uage] {str} - set default language file.\n"															+
+				"\t--thcrap {path} - set folder where can be found thcrap_loader.exe\n"											+
+				"\t--test - launch thcrap_test.exe\n"																			+
+				"\t--configure [-o[ld]] - launch thcrap_configure.exe\n"														+
+				"\t\t-o[ld] - launch old version.\n"																			+
+				"\t--repair [-d[efault]|-e[mpty]] - repair json file if it broken.\n"											+
+				"\t\t-d[efault] - returns default settings.\n"																	+
 				"\t\t-e[mpty] - fill object with empty data in json file."
 			);
 		}

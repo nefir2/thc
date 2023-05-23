@@ -4,33 +4,16 @@ using System.ComponentModel; //win32exception
 using System.Diagnostics; //process
 using System.IO; //filenotfoundexception
 using System.Linq; //.tolist<>()
+using System.Text.Json; //jsonexception
+
 namespace thc
 {
-	/// <summary> class that reading and parsing console input. </summary>
+	/// <summary> 
+	/// class that reading and parsing console input.
+	/// </summary>
 	public static class Thc
 	{
-		/// <summary>
-		/// cut in substring to first <paramref name="symbol"/> in <paramref name="str"/>. <paramref name="firstSymbol"/> is postion of <paramref name="symbol"/>. 
-		/// </summary>
-		/// <param name="str">string to cut.</param>
-		/// <param name="symbol">cutting till this symbol in <paramref name="str"/> in returning value.</param>
-		/// <param name="firstSymbol">position of this <paramref name="symbol"/>.</param>
-		/// <returns><paramref name="str"/> cutted till <paramref name="symbol"/>.</returns>
-		public static string CutToFirst(this string str, char symbol, out int firstSymbol)
-		{
-			string ret = "";
-			firstSymbol = -1;
-			for (int i = 0; i < str.Length; i++)
-			{
-				if (str[i] != symbol) ret += str[i];
-				else
-				{
-					firstSymbol = i;
-					break;
-				}
-			}
-			return ret;
-		}
+		#region touhou help methods
 		/// <summary>
 		/// launching program with args in one <see cref="string"/> <paramref name="fileAndArgs"/>
 		/// </summary>
@@ -125,6 +108,41 @@ namespace thc
 			else return $"{lang}.js";
 		}
 		/// <summary>
+		/// checking for existings Json file.
+		/// </summary>
+		/// <remarks>
+		/// if it exists, returns data from it. else returns <see langword="null"/>. <br/>
+		/// if json data file corrupted, throws <see cref="JsonException"/>.
+		/// </remarks>
+		/// <param name="filePath">path to json file.</param>
+		/// <returns>data from json file as <see cref="ThSettings"/>.</returns>
+		/// <exception cref="JsonException"></exception>
+		public static ThSettings FetchFile(string filePath)
+		{
+			try
+			{
+				if (!File.Exists(filePath)) return null;
+				else return JsonSaver.ReadFile<ThSettings>(filePath);
+			}
+			catch (Exception ex)
+			{
+				throw new JsonException(ex.Message, ex);
+			}
+		}
+		#endregion
+		#region lib methods
+		/// <summary>
+		/// shows and waiting for data from console.
+		/// </summary>
+		/// <param name="message">message why input.</param>
+		/// <returns>returns inputted <see cref="string"/>.</returns>
+		public static string GetString(string message)
+		{
+			Console.Write(message);
+			return Console.ReadLine();
+		}
+		#region  this.methods
+		/// <summary>
 		/// removes element from array and returns this array.
 		/// </summary>
 		/// <typeparam name="T">type of array's elements.</typeparam>
@@ -166,17 +184,55 @@ namespace thc
 			for (int i = start; i < end; i++) cutted += value[i];
 			return cutted;
 		}
+		/// <summary>
+		/// makes from array <see cref="char"/><c>[]</c> to <see cref="string"/> object.
+		/// </summary>
+		/// <remarks>
+		/// if <paramref name="chars"/> is empty, then returns <c>""</c>.
+		/// </remarks>
+		/// <param name="chars">array of <see cref="char"/><c>[]</c>.</param>
+		/// <returns><see cref="char"/><c>[]</c> array as <see cref="string"/>.</returns>
 		public static string CharArrayToString(this char[] chars)
 		{
 			string ret = "";
 			for (int i = 0; i < chars.Length; i++) ret += chars[i];
 			return ret;
 		}
+		/// <summary>
+		/// returns count of specified <see cref="char"/> <paramref name="value"/>.
+		/// </summary>
+		/// <param name="str"><see cref="string"/> where to count <see cref="char"/> <paramref name="value"/>.</param>
+		/// <param name="value"><see cref="char"/> that will be counted.</param>
+		/// <returns>count of <paramref name="value"/>.</returns>
 		public static int CountOfChars(this string str, char value)
 		{
 			int c = 0;
 			for (int i = 0; i < str.Length; i++) if (str[i] == value) c++;
 			return c;
 		}
+		/// <summary>
+		/// cut in substring to first <paramref name="symbol"/> in <paramref name="str"/>. <paramref name="firstSymbol"/> is postion of <paramref name="symbol"/>. 
+		/// </summary>
+		/// <param name="str">string to cut.</param>
+		/// <param name="symbol">cutting till this symbol in <paramref name="str"/> in returning value.</param>
+		/// <param name="firstSymbol">position of this <paramref name="symbol"/>.</param>
+		/// <returns><paramref name="str"/> cutted till <paramref name="symbol"/>.</returns>
+		public static string CutToFirst(this string str, char symbol, out int firstSymbol)
+		{
+			string ret = "";
+			firstSymbol = -1;
+			for (int i = 0; i < str.Length; i++)
+			{
+				if (str[i] != symbol) ret += str[i];
+				else
+				{
+					firstSymbol = i;
+					break;
+				}
+			}
+			return ret;
+		}
+		#endregion this.
+		#endregion lib
 	}
 }

@@ -2,6 +2,12 @@
 ## th executer from console
 runs thcrap to launch touhou with less args than standard link to thcrap_loader.exe.
 
-configurable by command or by changing data in json file, that creating in his directory after first launching of thc in same directory as this program.
+## configuration
+### before first launch
+place this program in thcrap directory with `bin`, `config`, `thcrap_loader.exe` and other. 
 
-for more information launch in console `.\thc.exe --help` in same folder in console as program.
+### reconfigure
+configurable by command or by changing data in json file, that created in program's directory after first launching.
+
+## other information
+for more information launch in console `.\thc.exe --help` in same folder in cmd or powershell as the program.

@@ -137,8 +137,16 @@ namespace thc
 								else Usage();
 								return;
 							case "--repair":
-								if (args[1].Equals("-d") || args[1].Equals("-default")) JsonSaver.MakeFile(jsonPath, settings);
-								else if (args[1].Equals("-e") || args[1].Equals("-empty")) JsonSaver.MakeFile(jsonPath, new ThSettings("", "", ""));
+								if (args[1].Equals("-d") || args[1].Equals("-default"))
+								{
+									File.Delete(jsonPath);
+									JsonSaver.MakeFile(jsonPath, new ThSettings(Thc.ThArgMaker("6"), thcrapPath: point));
+								}
+								else if (args[1].Equals("-e") || args[1].Equals("-empty"))
+								{
+									File.Delete(jsonPath);
+									JsonSaver.MakeFile(jsonPath, new ThSettings("", "", ""));
+								}
 								else Usage();
 								return;
 							default:

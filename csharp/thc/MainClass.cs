@@ -76,11 +76,11 @@ namespace thc
 			configureName = "thcrap_configure.exe";
 			configureV3Name = "thcrap_configure_v3.exe";
 			configFolderName = "config";
-			settingsFolderName = "thc config";
 
 			point = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 			settingsFolderPath = Path.Combine(point, settingsFolderName);
 			jsonPath = $@"{settingsFolderPath}\{Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location)}.json";
+			settingsFolderName = $"{Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location)} config";
 
 			Directory.CreateDirectory(settingsFolderPath);
 		}

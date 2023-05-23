@@ -76,11 +76,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="jsonSaver.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="lib\json\JsonSaver.cs" />
+    <Compile Include="lib\ThcExtensions.cs" />
+    <Compile Include="MainClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="thc.cs" />
-    <Compile Include="thSettings.cs" />
+    <Compile Include="lib\Thc.cs" />
+    <Compile Include="lib\json\thSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

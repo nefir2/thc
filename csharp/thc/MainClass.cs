@@ -1,14 +1,15 @@
-﻿using System; //cw
+﻿using System; //console, exception
 using System.IO; //file, directory
 using System.Reflection; //assembly
 using System.Text.Json; //jsonexception
-
+using thc.lib; //thc
+using thc.lib.json; //thsettings, jsonsaver
 namespace thc
 {
 	/// <summary>
 	/// main class.
 	/// </summary>
-	internal static class Program
+	internal static class MainClass
 	{
 		#region fields
 		/// <summary>
@@ -37,7 +38,7 @@ namespace thc
 		static ThSettings settings;
 		#endregion
 		#region ctors
-		static Program()
+		static MainClass()
 		{
 			point = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 			thcrapload = "thcrap_loader.exe";
@@ -136,12 +137,8 @@ namespace thc
 								else Usage();
 								return;
 							case "--repair":
-								if (args[1].Equals("-d") || args[1].Equals("-delete") || args[1].Equals("-default"))
-								{
-									Directory.Delete(settingsFolderPath, true);
-									Directory.CreateDirectory(settingsFolderPath);
-									JsonSaver.MakeFile(jsonPath, settings);
-								}
+								if (args[1].Equals("-d") || args[1].Equals("-default")) JsonSaver.MakeFile(jsonPath, settings);
+								else if (args[1].Equals("-e") || args[1].Equals("-empty")) JsonSaver.MakeFile(jsonPath, new ThSettings("", "", ""));
 								else Usage();
 								return;
 							default:
@@ -239,7 +236,8 @@ namespace thc
 				"\t--configure [-o[ld]] - launch thcrap_configure.\n"													+
 				"\t\t-o[ld] - launch old version.\n"																	+
 				"\t--repair [-d[efault]|-e[mpty]] - repair json file if it broken.\n"									+
-				"\t\t-d[efault] - returns default settings.\n"
+				"\t\t-d[efault] - returns default settings.\n" +
+				"\t\t-e[mpty] - fill object with empty data in json file."
 			);
 		}
 		#endregion

@@ -1,4 +1,4 @@
-﻿namespace thc
+﻿namespace thc.lib.json
 {
 	/// <summary>
 	/// settings for to save as object in json file.

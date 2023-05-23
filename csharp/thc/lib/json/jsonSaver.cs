@@ -1,7 +1,7 @@
 ﻿using System.IO; //filestream
 using System.Text.Json; //jsonserializer
 using System.Threading.Tasks; //task<t>
-namespace thc
+namespace thc.lib.json
 {
 	/// <summary>
 	/// class with methods that making or reading json file.

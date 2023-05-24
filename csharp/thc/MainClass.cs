@@ -278,7 +278,7 @@ namespace thc
 		/// check is it thcrap folder.
 		/// </summary>
 		/// <param name="path">path to thcrap folder.</param>
-		/// <returns></returns>
+		/// <returns>if it thcrap folder with <c>thcrap_loader.exe</c> and <c>config/</c> returns <see langword="true"/>.</returns>
 		public static bool IsThcrapDirectory(string path) => File.Exists(Path.Combine(path, thcrapload)) && Directory.Exists(Path.Combine(path, configFolderName));
 		/// <summary>
 		/// launcher of touhou.

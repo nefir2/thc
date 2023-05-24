@@ -3,7 +3,7 @@ using System.IO; //file, directory
 using System.Reflection; //assembly
 using System.Text.Json; //jsonexception
 using thc.lib; //thc
-using thc.lib.json; //thsettings, jsonsaver
+using thc.lib.json; //thsettings, jsonsaver, itouhousettings
 namespace thc
 {
 	/// <summary>
@@ -15,7 +15,7 @@ namespace thc
 		/// <summary>
 		/// instance of <see cref="ThSettings"/> for saving in json file.
 		/// </summary>
-		static ThSettings settings;
+		static ITouhouSettings settings;
 		/// <summary>
 		/// path to folder where placed this program.
 		/// </summary>
@@ -93,36 +93,9 @@ namespace thc
 		/// <param name="args">args from console.</param>
 		public static void Main(string[] args)
 		{
-			try
-			{
-				settings = Thc.FetchFile(jsonPath);
-				if (settings is null)
-				{
-					settings = new ThSettings(Thc.ThArgMaker("6"), thcrapPath: point);
-					JsonSaver.MakeFile(jsonPath, settings);
-				}				
-			}
-			catch (JsonException ex)
-			{
-				if (!(args.Length != 0 && args[0].Equals("--repair")))
-				{
-					Console.WriteLine
-					(
-						$"json file with path {jsonPath} is corrupted.\n" +
-						$"use \"{Assembly.GetExecutingAssembly().Location} --repair\" to fix json file by yourself.\n" +
-						$"use \"{Assembly.GetExecutingAssembly().Location} --repair -d\" to return settings to default.\n" +
-						$"\n" +
-						$"exception message: {ex.Message}\n"
-					);
-					return;
-				}
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine(ex.Message);
-			}
+			SetSettings(args);
 
-			if (!File.Exists(Path.Combine(settings.ThcrapPath, thcrapload)) && !Directory.Exists(Path.Combine(settings.ThcrapPath, configFolderName))) Console.WriteLine("not a thcrap folder.\nuse \"thc.exe --thcrap {path}\" to configure path to thcrap folder.");
+			if (!IsThcrapDirectory(settings.ThcrapPath)) Console.WriteLine("not a thcrap folder.\nuse \"thc.exe --thcrap {path}\" to configure path to thcrap folder.");
 
 			if (args.Length > 0)
 			{
@@ -234,33 +207,8 @@ namespace thc
 					}
 				}
 			}
-			try
-			{
-				switch (args.Length) //@@@@@@@ main arguments @@@@@@@@
-				{
-					case 2:
-						Thc.Launch($"\"{Path.Combine(settings.ThcrapPath, thcrapload)}\" {Thc.ThArgMaker(args[0])} {Thc.JsArgMaker(args[1])}");
-						return;
-					case 1:
-						Thc.Launch($"\"{Path.Combine(settings.ThcrapPath, thcrapload)}\" {Thc.ThArgMaker(args[0])} {Thc.JsArgMaker(settings.DefaultLang)}");
-						return;
-					case 0:
-						if (settings.DefaultTouhou == "")
-						{
-							Usage();
-							return;
-						}
-						else Thc.Launch($"\"{Path.Combine(settings.ThcrapPath, thcrapload)}\" {Thc.ThArgMaker(settings.DefaultTouhou)} {Thc.JsArgMaker(settings.DefaultLang)}");
-						return;
-					default:
-						Usage();
-						return;
-				}
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine(ex.Message);
-			}
+
+			Launcher(args);
 		}
 		/// <summary>
 		/// manual for this program.
@@ -290,6 +238,81 @@ namespace thc
 				"\t\t-d[efault] - returns default settings.\n"																	+
 				"\t\t-e[mpty] - fill object with empty data in json file."
 			);
+		}
+		/// <summary>
+		/// set <see cref="settings"/> variable.
+		/// </summary>
+		/// <param name="arguments">arguments from <see cref="Main(string[])"/> method to check repairing of json.</param>
+		public static void SetSettings(string[] arguments)
+		{
+			try
+			{
+				settings = Thc.FetchFile(jsonPath);
+				if (!(settings is ITouhouSettings))
+				{
+					settings = new ThSettings(Thc.ThArgMaker("6"), thcrapPath: point);
+					JsonSaver.MakeFile(jsonPath, settings);
+				}
+			}
+			catch (JsonException ex)
+			{
+				if (!(arguments.Length != 0 && arguments[0].Equals("--repair")))
+				{
+					Console.WriteLine
+					(
+						$"json file with path {jsonPath} is corrupted.\n" +
+						$"use \"{Assembly.GetExecutingAssembly().Location} --repair\" to fix json file by yourself.\n" +
+						$"use \"{Assembly.GetExecutingAssembly().Location} --repair -d\" to return settings to default.\n" +
+						$"\n" +
+						$"exception message: {ex.Message}\n"
+					);
+					return;
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
+		}
+		/// <summary>
+		/// check is it thcrap folder.
+		/// </summary>
+		/// <param name="path">path to thcrap folder.</param>
+		/// <returns></returns>
+		public static bool IsThcrapDirectory(string path) => File.Exists(Path.Combine(path, thcrapload)) && Directory.Exists(Path.Combine(path, configFolderName));
+		/// <summary>
+		/// launcher of touhou.
+		/// </summary>
+		/// <param name="arguments">checking arguments from <see cref="Main(string[])"/> if it has needed data.</param>
+		public static void Launcher(string[] arguments)
+		{
+			try
+			{
+				switch (arguments.Length) //@@@@@@@ main arguments @@@@@@@@
+				{
+					case 2:
+						Thc.Launch($"\"{Path.Combine(settings.ThcrapPath, thcrapload)}\" {Thc.ThArgMaker(arguments[0])} {Thc.JsArgMaker(arguments[1])}");
+						return;
+					case 1:
+						Thc.Launch($"\"{Path.Combine(settings.ThcrapPath, thcrapload)}\" {Thc.ThArgMaker(arguments[0])} {Thc.JsArgMaker(settings.DefaultLang)}");
+						return;
+					case 0:
+						if (settings.DefaultTouhou == "")
+						{
+							Usage();
+							return;
+						}
+						else Thc.Launch($"\"{Path.Combine(settings.ThcrapPath, thcrapload)}\" {Thc.ThArgMaker(settings.DefaultTouhou)} {Thc.JsArgMaker(settings.DefaultLang)}");
+						return;
+					default:
+						Usage();
+						return;
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
 		}
 		#endregion
 	}

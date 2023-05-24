@@ -10,12 +10,12 @@ namespace thc.lib
 	{
 		#region  this.methods
 		/// <summary>
-		/// removes element from array and returns this array.
+		/// removes first element from array and returns this array.
 		/// </summary>
 		/// <typeparam name="T">type of array's elements.</typeparam>
 		/// <param name="array">the array to remove the element from.</param>
 		/// <param name="value">element of array, that must disappear.</param>
-		/// <returns>array without <paramref name="value"/>.</returns>
+		/// <returns>array without first <paramref name="value"/>.</returns>
 		public static T[] DeleteValue<T>(this T[] array, T value)
 		{
 			List<T> x = array.ToList();
@@ -23,11 +23,11 @@ namespace thc.lib
 			return x.ToArray();
 		}
 		/// <summary>
-		/// removes <see cref="char"/> element from <see cref="string"/> <paramref name="value"/>.
+		/// removes first <see cref="char"/> element from <see cref="string"/> <paramref name="value"/>.
 		/// </summary>
 		/// <param name="str"><see cref="string"/>, where must disappear <paramref name="value"/>.</param>
 		/// <param name="value">element of <paramref name="str"/>, that must disappear.</param>
-		/// <returns><see cref="string"/> without <paramref name="value"/>.</returns>
+		/// <returns><see cref="string"/> without first <paramref name="value"/>.</returns>
 		public static string DeleteValue(this string str, char value)
 		{
 			List<char> x = str.ToList();

@@ -3,20 +3,11 @@
 	/// <summary>
 	/// settings for to save as object in json file.
 	/// </summary>
-	public class ThSettings
+	public class ThSettings : ITouhouSettings
 	{
 		#region properties
-		/// <summary>
-		/// default number of touhou.
-		/// </summary>
 		public string DefaultTouhou { get; set; }
-		/// <summary>
-		/// default language json file for touhou.
-		/// </summary>
-		public string DefaultLang{ get; set; }
-		/// <summary>
-		/// path to thcrap folder.
-		/// </summary>
+		public string DefaultLang { get; set; }
 		public string ThcrapPath { get; set; }
 		#endregion
 		#region ctors

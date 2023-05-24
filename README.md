@@ -12,7 +12,7 @@ place this program in thcrap directory with `bin`, `config`, `thcrap_loader.exe`
 creating directory with name `thc config` by default in same directory as program. there can be found `thc.json` file where stored configuration for this program. also you can move `thc.exe` and `thc config` to another place, because program was configured in first launch, and in property `ThcrapPath` stores path to directory where was placed `thc.exe`.
 
 ### reconfigure
-configurable by command like `thc --thcrap {path}` or by changing data in json file `thc config\thc.json` `ThcrapPath: "{path}"`.
+configurable by command like `.\thc --thcrap {path}` or by changing data in json file `thc config\thc.json` `ThcrapPath: "{path}"`.
 
 ## other information
 recommend set `thcrap` directory with `thc.exe` and `thc config` files to PATH variable to easiely run `thc.exe` from everywhere.

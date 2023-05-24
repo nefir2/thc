@@ -70,6 +70,7 @@ namespace thc
 		{
 			editor = "notepad";
 			binName = "bin";
+			settings = null;
 			testName = "thcrap_test.exe";
 			thcrapload = "thcrap_loader.exe";
 			notLangNames = new string[] { "config.js", "games.js", "mods.js" };
@@ -80,7 +81,7 @@ namespace thc
 			point = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 			settingsFolderName = Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location) + " config";
 			settingsFolderPath = Path.Combine(point, settingsFolderName);
-			jsonPath = $@"{settingsFolderPath}\{Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location)}.json";
+			jsonPath = $"{Path.Combine(settingsFolderPath, Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location))}.json";
 
 			Directory.CreateDirectory(settingsFolderPath);
 		}
@@ -238,10 +239,10 @@ namespace thc
 				switch (args.Length) //@@@@@@@ main arguments @@@@@@@@
 				{
 					case 2:
-						Thc.Launch($"\"{settings.ThcrapPath}\\{thcrapload}\" {Thc.ThArgMaker(args[0])} {Thc.JsArgMaker(args[1])}");
+						Thc.Launch($"\"{Path.Combine(settings.ThcrapPath, thcrapload)}\" {Thc.ThArgMaker(args[0])} {Thc.JsArgMaker(args[1])}");
 						return;
 					case 1:
-						Thc.Launch($"\"{settings.ThcrapPath}\\{thcrapload}\" {Thc.ThArgMaker(args[0])} {Thc.JsArgMaker(settings.DefaultLang)}");
+						Thc.Launch($"\"{Path.Combine(settings.ThcrapPath, thcrapload)}\" {Thc.ThArgMaker(args[0])} {Thc.JsArgMaker(settings.DefaultLang)}");
 						return;
 					case 0:
 						if (settings.DefaultTouhou == "")
@@ -249,7 +250,7 @@ namespace thc
 							Usage();
 							return;
 						}
-						else Thc.Launch($"\"{settings.ThcrapPath}\\{thcrapload}\" {Thc.ThArgMaker(settings.DefaultTouhou)} {Thc.JsArgMaker(settings.DefaultLang)}");
+						else Thc.Launch($"\"{Path.Combine(settings.ThcrapPath, thcrapload)}\" {Thc.ThArgMaker(settings.DefaultTouhou)} {Thc.JsArgMaker(settings.DefaultLang)}");
 						return;
 					default:
 						Usage();

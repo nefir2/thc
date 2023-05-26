@@ -2,7 +2,7 @@
 using System.IO; //file, directory
 using System.Reflection; //assembly
 using System.Text.Json; //jsonexception
-using thc.lib; //thc, itouhousettings
+using thc.lib; //thc, ithcsettings
 using thc.lib.json; //thsettings, jsonsaver
 namespace thc
 {

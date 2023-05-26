@@ -91,7 +91,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="lib\ITouhouSettings.cs" />
+    <Compile Include="lib\ITHCSettings.cs" />
     <Compile Include="lib\json\JsonSaver.cs" />
     <Compile Include="lib\ThcExtensions.cs" />
     <Compile Include="MainClass.cs" />

@@ -2,8 +2,8 @@
 using System.IO; //file, directory
 using System.Reflection; //assembly
 using System.Text.Json; //jsonexception
-using thc.lib; //thc
-using thc.lib.json; //thsettings, jsonsaver, itouhousettings
+using thc.lib; //thc, itouhousettings
+using thc.lib.json; //thsettings, jsonsaver
 namespace thc
 {
 	/// <summary>
@@ -15,7 +15,7 @@ namespace thc
 		/// <summary>
 		/// instance of <see cref="ThSettings"/> for saving in json file.
 		/// </summary>
-		static ITouhouSettings settings;
+		static ITHCSettings settings;
 		/// <summary>
 		/// path to folder where placed this program.
 		/// </summary>
@@ -248,7 +248,7 @@ namespace thc
 			try
 			{
 				settings = Thc.FetchFile(jsonPath);
-				if (!(settings is ITouhouSettings))
+				if (!(settings is ITHCSettings))
 				{
 					settings = new ThSettings(Thc.ThArgMaker("6"), thcrapPath: point);
 					JsonSaver.MakeFile(jsonPath, settings);

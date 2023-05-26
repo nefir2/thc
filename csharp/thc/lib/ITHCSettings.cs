@@ -3,7 +3,7 @@
 	/// <summary>
 	/// interface for thsettings saving.
 	/// </summary>
-	internal interface ITouhouSettings
+	internal interface ITHCSettings
 	{
 		/// <summary>
 		/// default number of touhou.

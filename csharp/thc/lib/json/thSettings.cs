@@ -3,7 +3,7 @@
 	/// <summary>
 	/// settings for to save as object in json file.
 	/// </summary>
-	public class ThSettings : ITouhouSettings
+	public class ThSettings : ITHCSettings
 	{
 		#region properties
 		public string DefaultTouhou { get; set; }

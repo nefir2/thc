@@ -13,7 +13,7 @@ namespace thc
 	{
 		#region fields
 		/// <summary>
-		/// instance of <see cref="ThSettings"/> for saving in json file.
+		/// instance of <see cref="ITHCSettings"/> for saving in json file.
 		/// </summary>
 		static ITHCSettings settings;
 		/// <summary>

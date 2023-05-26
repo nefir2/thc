@@ -93,7 +93,10 @@ namespace thc
 		/// <param name="args">args from console.</param>
 		public static void Main(string[] args)
 		{
-			SetSettings(args);
+			if (args.Length == 0 && !args[0].Equals("--repair"))
+			{
+				if (!SetSettings()) return;
+			}
 
 			if (!IsThcrapDirectory(settings.ThcrapPath)) Console.WriteLine("not a thcrap folder.\nuse \"thc.exe --thcrap {path}\" to configure path to thcrap folder.");
 
@@ -242,8 +245,8 @@ namespace thc
 		/// <summary>
 		/// set <see cref="settings"/> variable.
 		/// </summary>
-		/// <param name="arguments">arguments from <see cref="Main(string[])"/> method to check repairing of json.</param>
-		public static void SetSettings(string[] arguments)
+		/// <returns>returns <see langword="true"/> if code is exited without exceptions.</returns>
+		public static bool SetSettings()
 		{
 			try
 			{
@@ -253,25 +256,24 @@ namespace thc
 					settings = new ThSettings(Thc.ThArgMaker("6"), thcrapPath: point);
 					JsonSaver.MakeFile(jsonPath, settings);
 				}
+				return true;
 			}
 			catch (JsonException ex)
 			{
-				if (!(arguments.Length != 0 && arguments[0].Equals("--repair")))
-				{
-					Console.WriteLine
-					(
-						$"json file with path {jsonPath} is corrupted.\n" +
-						$"use \"{Assembly.GetExecutingAssembly().Location} --repair\" to fix json file by yourself.\n" +
-						$"use \"{Assembly.GetExecutingAssembly().Location} --repair -d\" to return settings to default.\n" +
-						$"\n" +
-						$"exception message: {ex.Message}\n"
-					);
-					return;
-				}
+				Console.WriteLine
+				(
+					$"json file with path {jsonPath} is corrupted.\n" +
+					$"use \"{Assembly.GetExecutingAssembly().Location} --repair\" to fix json file by yourself.\n" +
+					$"use \"{Assembly.GetExecutingAssembly().Location} --repair -d\" to return settings to default.\n" +
+					$"\n" +
+					$"exception message: {ex.Message}\n"
+				);
+				return false;
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine(ex.Message);
+				return false;
 			}
 		}
 		/// <summary>

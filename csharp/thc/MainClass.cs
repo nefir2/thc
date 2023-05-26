@@ -70,7 +70,7 @@ namespace thc
 		{
 			editor = "notepad";
 			binName = "bin";
-			settings = null;
+			settings = Thc.FetchFile(jsonPath);
 			testName = "thcrap_test.exe";
 			thcrapload = "thcrap_loader.exe";
 			notLangNames = new string[] { "config.js", "games.js", "mods.js" };
@@ -93,10 +93,19 @@ namespace thc
 		/// <param name="args">args from console.</param>
 		public static void Main(string[] args)
 		{
-			if (args.Length == 0 && !args[0].Equals("--repair"))
+            //Console.WriteLine(args.Length == 0);
+			//Console.WriteLine(!args[0].Equals("--repair"));
+			SetSettings();
+            //if (args.Length == 0 && !args[0].Equals("--repair"))
+            //{
+            if (args.Length == 0)
 			{
-				if (!SetSettings()) return;
+				if (!args[0].Equals("--repair"))
+				{
+					if (!SetSettings()) return;
+				}
 			}
+			//}
 
 			if (!IsThcrapDirectory(settings.ThcrapPath)) Console.WriteLine("not a thcrap folder.\nuse \"thc.exe --thcrap {path}\" to configure path to thcrap folder.");
 
@@ -250,10 +259,9 @@ namespace thc
 		{
 			try
 			{
-				settings = Thc.FetchFile(jsonPath);
 				if (!(settings is ITHCSettings))
 				{
-					settings = new ThSettings(Thc.ThArgMaker("6"), thcrapPath: point);
+					settings = new ThSettings(Thc.ThArgMaker(6), thcrapPath: point);
 					JsonSaver.MakeFile(jsonPath, settings);
 				}
 				return true;
@@ -268,13 +276,12 @@ namespace thc
 					$"\n" +
 					$"exception message: {ex.Message}\n"
 				);
-				return false;
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine(ex.Message);
-				return false;
 			}
+			return false;
 		}
 		/// <summary>
 		/// check is it thcrap folder.

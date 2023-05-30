@@ -1,4 +1,4 @@
-cpp/stepfiles/
+/cpp/stepfiles/
 **/.vs/
 **/.vscode/
 ## Ignore Visual Studio temporary files, build results, and

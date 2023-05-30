@@ -2,7 +2,7 @@
 using System.IO; //file, directory
 using System.Reflection; //assembly
 using System.Text.Json; //jsonexception
-using thc.lib; //thc, itouhousettings
+using thc.lib; //thc, ithcsettings
 using thc.lib.json; //thsettings, jsonsaver
 namespace thc
 {
@@ -13,7 +13,7 @@ namespace thc
 	{
 		#region fields
 		/// <summary>
-		/// instance of <see cref="ThSettings"/> for saving in json file.
+		/// instance of <see cref="ITHCSettings"/> for saving in json file.
 		/// </summary>
 		static ITHCSettings settings;
 		/// <summary>
@@ -70,7 +70,7 @@ namespace thc
 		{
 			editor = "notepad";
 			binName = "bin";
-			settings = null;
+			settings = Thc.FetchFile(jsonPath);
 			testName = "thcrap_test.exe";
 			thcrapload = "thcrap_loader.exe";
 			notLangNames = new string[] { "config.js", "games.js", "mods.js" };
@@ -93,7 +93,19 @@ namespace thc
 		/// <param name="args">args from console.</param>
 		public static void Main(string[] args)
 		{
-			SetSettings(args);
+            //Console.WriteLine(args.Length == 0);
+			//Console.WriteLine(!args[0].Equals("--repair"));
+			SetSettings();
+            //if (args.Length == 0 && !args[0].Equals("--repair"))
+            //{
+            if (args.Length == 0)
+			{
+				if (!args[0].Equals("--repair"))
+				{
+					if (!SetSettings()) return;
+				}
+			}
+			//}
 
 			if (!IsThcrapDirectory(settings.ThcrapPath)) Console.WriteLine("not a thcrap folder.\nuse \"thc.exe --thcrap {path}\" to configure path to thcrap folder.");
 
@@ -242,37 +254,34 @@ namespace thc
 		/// <summary>
 		/// set <see cref="settings"/> variable.
 		/// </summary>
-		/// <param name="arguments">arguments from <see cref="Main(string[])"/> method to check repairing of json.</param>
-		public static void SetSettings(string[] arguments)
+		/// <returns>returns <see langword="true"/> if code is exited without exceptions.</returns>
+		public static bool SetSettings()
 		{
 			try
 			{
-				settings = Thc.FetchFile(jsonPath);
 				if (!(settings is ITHCSettings))
 				{
-					settings = new ThSettings(Thc.ThArgMaker("6"), thcrapPath: point);
+					settings = new ThSettings(Thc.ThArgMaker(6), thcrapPath: point);
 					JsonSaver.MakeFile(jsonPath, settings);
 				}
+				return true;
 			}
 			catch (JsonException ex)
 			{
-				if (!(arguments.Length != 0 && arguments[0].Equals("--repair")))
-				{
-					Console.WriteLine
-					(
-						$"json file with path {jsonPath} is corrupted.\n" +
-						$"use \"{Assembly.GetExecutingAssembly().Location} --repair\" to fix json file by yourself.\n" +
-						$"use \"{Assembly.GetExecutingAssembly().Location} --repair -d\" to return settings to default.\n" +
-						$"\n" +
-						$"exception message: {ex.Message}\n"
-					);
-					return;
-				}
+				Console.WriteLine
+				(
+					$"json file with path {jsonPath} is corrupted.\n" +
+					$"use \"{Assembly.GetExecutingAssembly().Location} --repair\" to fix json file by yourself.\n" +
+					$"use \"{Assembly.GetExecutingAssembly().Location} --repair -d\" to return settings to default.\n" +
+					$"\n" +
+					$"exception message: {ex.Message}\n"
+				);
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine(ex.Message);
 			}
+			return false;
 		}
 		/// <summary>
 		/// check is it thcrap folder.

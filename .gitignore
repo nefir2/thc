@@ -1,4 +1,4 @@
-cpp/stepfiles/
+/cpp/stepfiles/
 **/.vs/
 **/.vscode/
 ## Ignore Visual Studio temporary files, build results, and
@@ -399,4 +399,7 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/.vs/slnx.sqlite
 /csharp/.vs/thc/v17/.suo
+/csharp/thc/obj/Debug/thc.csproj.AssemblyReference.cache
+/csharp/thc/thc.csproj.user

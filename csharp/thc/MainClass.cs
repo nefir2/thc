@@ -15,55 +15,55 @@ namespace thc
 		/// <summary>
 		/// instance of <see cref="ITHCSettings"/> for saving in json file.
 		/// </summary>
-		static ITHCSettings settings;
+		private static ITHCSettings settings;
 		/// <summary>
 		/// path to folder where placed this program.
 		/// </summary>
-		static readonly string point;
+		private static readonly string point;
 		/// <summary>
 		/// name of program that help edit json file when it need to be repaired.
 		/// </summary>
-		static readonly string editor;
+		private static readonly string editor;
 		/// <summary>
 		/// name of folder bin in thcrap folder.
 		/// </summary>
-		static readonly string binName;
+		private static readonly string binName;
 		/// <summary>
 		/// name of program that testing dependecies in thcrap/bin folder.
 		/// </summary>
-		static readonly string testName;
+		private static readonly string testName;
 		/// <summary>
 		/// path to json file with settings.
 		/// </summary>
-		static readonly string jsonPath;
+		private static readonly string jsonPath;
 		/// <summary>
 		/// name of program that must be named <c>thcrap_loader.exe</c>
 		/// </summary>
-		static readonly string thcrapload;
+		private static readonly string thcrapload;
 		/// <summary>
 		/// name of program for configuration thcrap (old version) in thcrap/bin folder.
 		/// </summary>
-		static readonly string configureName;
+		private static readonly string configureName;
 		/// <summary>
 		/// array of js(on) files that is not a languages.
 		/// </summary>
-		static readonly string[] notLangNames;
+		private static readonly string[] notLangNames;
 		/// <summary>
 		/// name of program for configuration thcrap (new version) in thcrap/bin folder.
 		/// </summary>
-		static readonly string configureV3Name;
+		private static readonly string configureV3Name;
 		/// <summary>
 		/// name of config folder in thcrap folder.
 		/// </summary>
-		static readonly string configFolderName;
+		private static readonly string configFolderName;
 		/// <summary>
 		/// name of folder for json settings.
 		/// </summary>
-		static readonly string settingsFolderName;
+		private static readonly string settingsFolderName;
 		/// <summary>
 		/// path to folder with json file.
 		/// </summary>
-		static readonly string settingsFolderPath;
+		private static readonly string settingsFolderPath;
 		#endregion
 		#region ctors
 		static MainClass()
@@ -93,12 +93,12 @@ namespace thc
 		/// <param name="args">args from console.</param>
 		public static void Main(string[] args)
 		{
-            //Console.WriteLine(args.Length == 0);
+			//Console.WriteLine(args.Length == 0);
 			//Console.WriteLine(!args[0].Equals("--repair"));
 			SetSettings();
-            //if (args.Length == 0 && !args[0].Equals("--repair"))
-            //{
-            if (args.Length == 0)
+			//if (args.Length == 0 && !args[0].Equals("--repair"))
+			//{
+			if (args.Length == 0)
 			{
 				if (!args[0].Equals("--repair"))
 				{
@@ -300,23 +300,20 @@ namespace thc
 				switch (arguments.Length) //@@@@@@@ main arguments @@@@@@@@
 				{
 					case 2:
-						Thc.Launch($"\"{Path.Combine(settings.ThcrapPath, thcrapload)}\" {Thc.ThArgMaker(arguments[0])} {Thc.JsArgMaker(arguments[1])}");
-						return;
+						settings.DefaultTouhou = Thc.ThArgMaker(arguments[0]); 
+						settings.DefaultLang = Thc.JsArgMaker(arguments[1]); 
+						break;
 					case 1:
-						Thc.Launch($"\"{Path.Combine(settings.ThcrapPath, thcrapload)}\" {Thc.ThArgMaker(arguments[0])} {Thc.JsArgMaker(settings.DefaultLang)}");
-						return;
+						settings.DefaultTouhou = Thc.ThArgMaker(arguments[0]);
+						break;
 					case 0:
-						if (settings.DefaultTouhou == "")
-						{
-							Usage();
-							return;
-						}
-						else Thc.Launch($"\"{Path.Combine(settings.ThcrapPath, thcrapload)}\" {Thc.ThArgMaker(settings.DefaultTouhou)} {Thc.JsArgMaker(settings.DefaultLang)}");
-						return;
+						if (settings.DefaultTouhou == "") goto default;
+						else break;
 					default:
 						Usage();
 						return;
 				}
+				Thc.Launch($"\"{Path.Combine(settings.ThcrapPath, thcrapload)}\" {settings.DefaultTouhou} {settings.DefaultLang}");
 			}
 			catch (Exception ex)
 			{

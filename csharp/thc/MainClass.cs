@@ -95,15 +95,13 @@ namespace thc
 		{
 			//Console.WriteLine(args.Length == 0);
 			//Console.WriteLine(!args[0].Equals("--repair"));
-			SetSettings();
+			//SetSettings();
 			//if (args.Length == 0 && !args[0].Equals("--repair"))
 			//{
-			if (args.Length == 0)
+			if (!SetSettings() && args.Length == 0 && args.Length > 0 && (!args[0].Equals("--repair") || !args[0].StartsWith("-h")))
 			{
-				if (!args[0].Equals("--repair"))
-				{
-					if (!SetSettings()) return;
-				}
+                Console.WriteLine("uncatchable error in json file. use function \"--repair\" to fix it. for more info use \"-h\" switch.");
+                return;
 			}
 			//}
 
@@ -313,6 +311,7 @@ namespace thc
 						Usage();
 						return;
 				}
+				JsonSaver.MakeFile(jsonPath, settings);
 				Thc.Launch($"\"{Path.Combine(settings.ThcrapPath, thcrapload)}\" {settings.DefaultTouhou} {settings.DefaultLang}");
 			}
 			catch (Exception ex)
